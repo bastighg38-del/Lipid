@@ -476,3 +476,9 @@ body.exit-right {
     right: 15px;
     z-index: 1000;
     }
+
+   @media (max-width: 650px) {
+        input[type="checkbox"] {
+            min-height: 22px;
+        }
+    }
