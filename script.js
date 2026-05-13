@@ -10,7 +10,7 @@ const factor2 = 0.0114;
 const factor3 = 88.4;
 const factor4 = 0.026;
 const factor5 = 0.026;
-const factor6 = 1.9493;
+const factor6 = 0.0195;
 const factor7 = 2.4;
 const factor8 = 10.929;
 
