@@ -276,4 +276,88 @@ function updateInput23() {
         LDLcs.value = "";
         LDLcs_mmol.value = "";
     }
+
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const fieldMap = {
+    "Cholesterin gesamt": "9Input",
+    "HDL-Cholesterin": "7Input",
+    "LDL-Cholesterin": "1Input",
+    "Triglyceride": "3Input",
+    "Apolipoprotein B": "13Input",
+    "HbA1c": "19Input",
+    "Kreatinin": "5Input",
+    "Lipoprotein(a)": "18Input"
+  };
+
+  document.addEventListener("paste", (event) => {
+    const text = (event.clipboardData || window.clipboardData).getData("text");
+    setTimeout(() => parseAndFill(text), 50);
+  });
+
+  function parseAndFill(text) {
+
+    const lines = text
+      .split("\n")
+      .map(l => l.trim())
+      .filter(Boolean);
+
+    let skipNext = false;
+
+    for (let i = 0; i < lines.length; i++) {
+
+      if (skipNext) {
+        skipNext = false;
+        continue;
+      }
+
+      let line = lines[i];
+
+      if (line.toLowerCase().includes("berechnet")) {
+        skipNext = true;
+        continue;
+      }
+
+      for (const key in fieldMap) {
+
+        if (line.includes(key)) {
+
+          const value = findNextNumber(lines, i);
+
+          if (value !== null) {
+
+            const input = document.getElementById(fieldMap[key]);
+
+            if (input) {
+
+              input.value = value;
+
+         
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function findNextNumber(lines, index) {
+
+    for (let j = index + 1; j < lines.length; j++) {
+
+      let val = lines[j]
+        .replace(",", ".")
+        .replace(/[^0-9.]/g, "");
+
+      if (val && !isNaN(val)) {
+        return parseFloat(val);
+      }
+    }
+
+    return null;
+  }
+
+});
