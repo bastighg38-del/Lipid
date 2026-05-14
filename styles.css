@@ -191,6 +191,10 @@ form {
 }
 
 
+sub {
+    font-size: 0.7em;
+    vertical-align: sub;
+}
 
 
 .Faktor {

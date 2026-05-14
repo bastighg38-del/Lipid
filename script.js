@@ -19,7 +19,7 @@ const get = id => document.getElementById(id);
 
 // ================== Inputs ==================
 const inputs = {};
-for (let i = 1; i <= 24; i++) {
+for (let i = 1; i <= 32; i++) {
     inputs[i] = get(`${i}Input`);
 }
 
@@ -96,7 +96,12 @@ function updateAllCalculated() {
     updateInput15();
     updateInput21and22();
     updateInput23();
+    updateInput25();
+    updateInput27();
+    updateInput29();
+    updateInput31(); // ← neu
 }
+
 
 function updateInput11() {
     const Input3 = inputs[3], Input7 = inputs[7], Input9 = inputs[9], Input11 = inputs[11], Input12 = inputs[12];
@@ -234,6 +239,39 @@ function recalcAllPairs() {
     inputs[21].value = (inputs[3].value / 5).toFixed(0);
     inputs[22].value = (inputs[21].value * 0.026).toFixed(2);
     }
+    if (inputs[18]?.value) {
+        const valueMgDl = inputs[18].value * 0.077;
+        inputs[25].value = valueMgDl.toFixed(1).replace(".", ",");
+        inputs[26].value = (valueMgDl * 0.026).toFixed(2).replace(".", ",");
+    }
+    if (inputs[1]?.value && inputs[25]?.value) {
+
+        const corrLDL =
+        Number(inputs[1].value) -
+        Number(String(inputs[25].value).replace(",", "."));
+
+    inputs[27].value = corrLDL.toFixed(0).replace(".", ",");
+    inputs[28].value = (corrLDL * 0.026).toFixed(2).replace(".", ",");
+}
+if (inputs[18]?.value && inputs[13]?.value) {
+
+    const lpa =
+        Number(String(inputs[18].value).replace(",", "."));
+
+    const apob_g_l =
+        Number(String(inputs[13].value).replace(",", ".")) * 0.01;
+
+    const result =
+        ((lpa * lpa) / apob_g_l) * 0.48;
+
+    inputs[29].value = result.toFixed(1).replace(".", ",");
+    inputs[30].value = (result * 0.026).toFixed(2).replace(".", ",");
+}
+if (inputs[1]?.value && inputs[29]?.value) {
+    const corrAHA = Number(inputs[1].value) - Number(String(inputs[29].value).replace(",", "."));
+    inputs[31].value = corrAHA.toFixed(0).replace(".", ",");
+    inputs[32].value = (corrAHA * 0.026).toFixed(2).replace(".", ",");
+}
 }
 
 const toggle = document.getElementById('toggel-All');
@@ -269,7 +307,7 @@ function updateInput23() {
             - ((tg / 8.56) + ((tg * nonHDL) / 2140) - ((tg * tg) / 16100))
             - 9.44;
 
-            LDLcs.value = eLDLcs.toFixed(2).replace(".", ",");
+            LDLcs.value = eLDLcs.toFixed(0).replace(".", ",");
             LDLcs_mmol.value = (eLDLcs * 0.026).toFixed(2).replace(".", ",");
 
     } else {
@@ -361,3 +399,100 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+function updateInput25() {
+
+    const Lpa = inputs[18]; 
+    const Input25 = inputs[25];
+    const Input26 = inputs[26];
+
+    if (!Lpa || !Input25 || !Input26) return;
+
+    if (Lpa.value) {
+
+        const valueMgDl = Number(Lpa.value) * 0.077;
+
+        Input25.value = valueMgDl.toFixed(0).replace(".", ",");
+        Input26.value = (valueMgDl * 0.026).toFixed(2).replace(".", ",");
+
+    } else {
+
+        Input25.value = "";
+        Input26.value = "";
+    }
+}
+
+function updateInput27() {
+
+    const LDL = inputs[1];
+    const LpaCRM = inputs[25];
+
+    const Input27 = inputs[27];
+    const Input28 = inputs[28];
+
+    if (!LDL || !LpaCRM || !Input27 || !Input28) return;
+
+    if (LDL.value && LpaCRM.value) {
+
+        const corrLDL = Number(LDL.value) - Number(String(LpaCRM.value).replace(",", "."));
+
+        Input27.value = corrLDL.toFixed(0).replace(".", ",");
+        Input28.value = (corrLDL * 0.026).toFixed(2).replace(".", ",");
+
+    } else {
+
+        Input27.value = "";
+        Input28.value = "";
+    }
+}
+
+function updateInput29() {
+
+    const Lpa = inputs[18];   // nmol/l
+    const ApoB = inputs[13];  // mg/dl
+
+    const Input29 = inputs[29];
+    const Input30 = inputs[30];
+
+    if (!Lpa || !ApoB || !Input29 || !Input30) return;
+
+    if (Lpa.value && ApoB.value) {
+
+        const lpa = Number(String(Lpa.value).replace(",", "."));
+
+        // mg/dl -> g/l
+        const apob_g_l =
+            Number(String(ApoB.value).replace(",", ".")) * 0.01;
+
+        const result =
+            (lpa*lpa) / (apob_g_l * 48);
+
+        Input29.value = result.toFixed(0).replace(".", ",");
+        Input30.value = (result * 0.48).toFixed(2).replace(".", ",");
+
+    } else {
+
+        Input29.value = "";
+        Input30.value = "";
+    }
+}
+
+// in der inputs-Schleife oben: for (let i = 1; i <= 32; i++)
+
+function updateInput31() {
+    const LDL   = inputs[1];
+    const LpaCaha = inputs[29];
+    const Input31 = inputs[31];
+    const Input32 = inputs[32];
+
+    if (!LDL || !LpaCaha || !Input31 || !Input32) return;
+
+    if (LDL.value && LpaCaha.value) {
+        const corrLDL = Number(LDL.value) - Number(String(LpaCaha.value).replace(",", "."));
+        Input31.value = corrLDL.toFixed(0).replace(".", ",");
+        Input32.value = (corrLDL * 0.026).toFixed(2).replace(".", ",");
+    } else {
+        Input31.value = "";
+        Input32.value = "";
+    }
+}
