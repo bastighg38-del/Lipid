@@ -211,6 +211,7 @@ form {
 }
 
 .gleichheitszeichen .tooltip-box {
+    font-size: 0.99rem;
     visibility: hidden;
     opacity: 0;
     background-color: #222;

@@ -269,8 +269,8 @@ function updateInput23() {
             - ((tg / 8.56) + ((tg * nonHDL) / 2140) - ((tg * tg) / 16100))
             - 9.44;
 
-        LDLcs.value = eLDLcs.toFixed(2);
-        LDLcs_mmol.value = (eLDLcs * 0.026).toFixed(2);
+            LDLcs.value = eLDLcs.toFixed(2).replace(".", ",");
+            LDLcs_mmol.value = (eLDLcs * 0.026).toFixed(2).replace(".", ",");
 
     } else {
         LDLcs.value = "";
