@@ -448,8 +448,8 @@ function updateInput27() {
 
 function updateInput29() {
 
-    const Lpa = inputs[18];   // nmol/l
-    const ApoB = inputs[13];  // mg/dl
+    const Lpa = inputs[18];   
+    const ApoB = inputs[14]; 
 
     const Input29 = inputs[29];
     const Input30 = inputs[30];
@@ -459,16 +459,11 @@ function updateInput29() {
     if (Lpa.value && ApoB.value) {
 
         const lpa = Number(String(Lpa.value).replace(",", "."));
-
-        // mg/dl -> g/l
-        const apob_g_l =
-            Number(String(ApoB.value).replace(",", ".")) * 0.01;
-
         const result =
-            (lpa*lpa) / (apob_g_l * 48);
+            (lpa*lpa) / (ApoB.value * 48);
 
         Input29.value = result.toFixed(0).replace(".", ",");
-        Input30.value = (result * 0.48).toFixed(2).replace(".", ",");
+        Input30.value = (result * factor1).toFixed(2).replace(".", ",");
 
     } else {
 
@@ -477,7 +472,6 @@ function updateInput29() {
     }
 }
 
-// in der inputs-Schleife oben: for (let i = 1; i <= 32; i++)
 
 function updateInput31() {
     const LDL   = inputs[1];
