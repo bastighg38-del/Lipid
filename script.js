@@ -449,7 +449,7 @@ function updateInput27() {
 function updateInput29() {
 
     const Lpa = inputs[18];   
-    const ApoB = inputs[14]; 
+    const ApoB = inputs[13]; 
 
     const Input29 = inputs[29];
     const Input30 = inputs[30];
