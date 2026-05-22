@@ -6,6 +6,8 @@ body {
     -webkit-overflow-scrolling: touch;
     opacity: 0; 
     transition: transform 0.4s ease, opacity 0.4s ease; 
+
+    
 }
 
 h1 {
@@ -93,6 +95,25 @@ form {
     gap: 16px;
 }
 
+
+
+/* Zentrierung des letzten Elements auf Desktop-Bildschirmen */
+/* Zentriert nur das Eingabefeld in der Zeile auf Desktop-Bildschirmen */
+.umrechner.last-input-centered {
+    grid-template-columns: 145px 1fr; /* 1. Spalte für Text, Rest für das Feld */
+}
+
+.umrechner.last-input-centered .eingabefeld {
+    grid-column: 2;             /* Positioniert das Feld in der zweiten Spalte */
+    justify-self: center;       /* Zentriert das Feld horizontal im verbleibenden Raum */
+    max-width: 220px;           /* Behält die Standardbreite bei */
+    width: 100%;
+}
+
+
+.op{
+    opacity: 0;
+}
 
 .BTN{
      display: flex;
@@ -543,4 +564,8 @@ body.exit-right {
         }
        
     }
+
+
+
+    
 

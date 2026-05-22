@@ -14,12 +14,13 @@ const factor6 = 0.0195;
 const factor7 = 2.4;
 const factor8 = 10.929;
 
+
 // ================== Helper ==================
 const get = id => document.getElementById(id);
 
 // ================== Inputs ==================
 const inputs = {};
-for (let i = 1; i <= 32; i++) {
+for (let i = 1; i <= 35; i++) {
     inputs[i] = get(`${i}Input`);
 }
 
@@ -90,6 +91,9 @@ addPairListeners(inputs[17], inputs[18], factor7);
 addPairListeners(inputs[19], inputs[20], factor8, true);
 
 
+
+
+
 // ================== BERECHNUNGEN ==================
 function updateAllCalculated() {
     updateInput11();
@@ -99,7 +103,10 @@ function updateAllCalculated() {
     updateInput25();
     updateInput27();
     updateInput29();
-    updateInput31(); // ← neu
+    updateInput31(); 
+    updateInput33();
+
+    updateFachQuotient();
 }
 
 
@@ -488,5 +495,44 @@ function updateInput31() {
     } else {
         Input31.value = "";
         Input32.value = "";
+    }
+}
+
+function updateInput33() {
+    const gLDLC  = inputs[1];
+    const eLDLc = inputs[11];
+    const Input33 = inputs[33];
+    const Input34 = inputs[34];
+    
+    if (!gLDLC || !eLDLc || !Input33 || !Input34) return;
+
+    if (gLDLC.value && eLDLc.value) {
+        const deltaLDL = Number(gLDLC.value) - Number(String(eLDLc.value).replace(",", "."));
+        Input33.value = deltaLDL.toFixed(0).replace(".", ",");
+        Input34.value = (deltaLDL * 0.026).toFixed(2).replace(".", ",");
+    } else {
+        Input33.value = "";
+        Input34.value = "";
+    }
+}
+
+
+function updateFachQuotient() {
+    const numerator = inputs[15];   
+    const denominator = inputs[13]; 
+
+    const out = inputs[35];
+
+    if (!numerator || !denominator || !out ) return;
+
+    if (numerator.value && denominator.value && Number(denominator.value) !== 0) {
+
+        const quotient = Number(numerator.value) / Number(denominator.value);
+
+        out.value = quotient.toFixed(1);
+
+    } else {
+        out.value = "";
+        
     }
 }
