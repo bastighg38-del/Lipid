@@ -20,7 +20,7 @@ const get = id => document.getElementById(id);
 
 // ================== Inputs ==================
 const inputs = {};
-for (let i = 1; i <= 35; i++) {
+for (let i = 1; i <= 36; i++) {
     inputs[i] = get(`${i}Input`);
 }
 
@@ -106,7 +106,8 @@ function updateAllCalculated() {
     updateInput31(); 
     updateInput33();
 
-    updateFachQuotient();
+    updateFachQuotient(15, 13, 35);
+    updateFachQuotient(3, 13, 36);
 }
 
 
@@ -517,11 +518,11 @@ function updateInput33() {
 }
 
 
-function updateFachQuotient() {
-    const numerator = inputs[15];   
-    const denominator = inputs[13]; 
+function updateFachQuotient(numeratorInput, denominatorInput, outputInput) {
+    const numerator = inputs[numeratorInput];   
+    const denominator = inputs[denominatorInput]; 
 
-    const out = inputs[35];
+    const out = inputs[outputInput];
 
     if (!numerator || !denominator || !out ) return;
 

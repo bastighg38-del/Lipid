@@ -95,6 +95,13 @@ form {
     gap: 16px;
 }
 
+.umrechner {
+    margin-bottom: 12px;
+}
+
+.umrechner.last-input-centered {
+    margin-bottom: 0;
+}
 
 
 /* Zentrierung des letzten Elements auf Desktop-Bildschirmen */
@@ -275,6 +282,18 @@ sub {
     transform: translateX(-50%) translateY(-6px);
 }
 @media (max-width: 650px) {
+
+    .umrechner.last-input-centered {
+    grid-template-columns: 1fr;
+}
+
+.umrechner.last-input-centered .eingabefeld {
+    grid-column: auto;
+    justify-self: stretch;
+    max-width: unset;
+    width: 92%;
+}
+
 
     body{
         padding-bottom: 90px;
