@@ -20,7 +20,7 @@ const get = id => document.getElementById(id);
 
 // ================== Inputs ==================
 const inputs = {};
-for (let i = 1; i <= 36; i++) {
+for (let i = 1; i <= 38; i++) {
     inputs[i] = get(`${i}Input`);
 }
 
@@ -108,6 +108,8 @@ function updateAllCalculated() {
 
     updateFachQuotient(15, 13, 35);
     updateFachQuotient(3, 13, 36);
+    updateFachQuotient(9, 13, 37);
+    updateFachQuotient(1, 13, 38);
 }
 
 
@@ -339,10 +341,17 @@ document.addEventListener("DOMContentLoaded", () => {
     "Lipoprotein(a)": "18Input"
   };
 
-  document.addEventListener("paste", (event) => {
+ document.addEventListener("paste", (event) => {
+
     const text = (event.clipboardData || window.clipboardData).getData("text");
-    setTimeout(() => parseAndFill(text), 50);
-  });
+
+    setTimeout(() => {
+        parseAndFill(text);
+
+        coolalert();
+
+    }, 50);
+});
 
   function parseAndFill(text) {
 
@@ -381,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               input.value = value;
 
-         
+                
               input.dispatchEvent(new Event("input", { bubbles: true }));
             }
           }
@@ -397,6 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let val = lines[j]
         .replace(",", ".")
         .replace(/[^0-9.]/g, "");
+        
+      
 
       if (val && !isNaN(val)) {
         return parseFloat(val);
@@ -535,5 +546,39 @@ function updateFachQuotient(numeratorInput, denominatorInput, outputInput) {
     } else {
         out.value = "";
         
+    }
+}
+function coolalert() {
+    if (typeof Swal !== "undefined") {
+        Swal.fire({
+            title: "✔ Erfolgreich eingefügt",
+            text: "Die Werte wurden übernommen. Bitte kurz prüfen.",
+            icon: "success",
+            confirmButtonText: "Alles klar",
+            background: "#1e1e1e",
+            color: "#ffffff",
+            confirmButtonColor: "#4CAF50"
+        });
+    } else {
+        // Fallback falls SweetAlert nicht geladen ist
+        const div = document.createElement("div");
+        div.textContent = "✔ Werte eingefügt";
+        div.style = `
+            position:fixed;
+            top:20px;
+            left:50%;
+            transform:translateX(-50%);
+            background:#333;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            z-index:9999;
+            box-shadow:0 10px 30px rgba(0,0,0,0.3);
+            font-family:sans-serif;
+        `;
+
+        document.body.appendChild(div);
+
+        setTimeout(() => div.remove(), 2500);
     }
 }
