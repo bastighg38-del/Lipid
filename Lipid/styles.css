@@ -1,590 +1,555 @@
 body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #e3f2ff, #f8faff);
-    font-family: "Arial", "Helvetica", sans-serif;
-    -webkit-overflow-scrolling: touch;
-    opacity: 0; 
-    transition: transform 0.4s ease, opacity 0.4s ease; 
-
-    
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #e3f2ff, #f8faff);
+  font-family: "Arial", "Helvetica", sans-serif;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease;
 }
 
 h1 {
-    text-align: center;
-    padding: 17px 0;
-    margin: 0 0 33px 0;
-    letter-spacing: 1.1px;
+  text-align: center;
+  padding: 17px 0;
+  margin: 0 0 33px 0;
+  letter-spacing: 1.1px;
 }
 
 form {
-    background: rgba(255, 255, 255, 0.9);
-    max-width: 715px; 
-    margin: auto;
-    padding: 28px;
-    border-radius: 20px;
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.05),
-        0 12px 20px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  max-width: 715px;
+  margin: auto;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.05),
+    0 12px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .umrechner {
-    display: grid;
-    grid-template-columns: 145px 220px 50px 220px;
-    align-items: center;
-    gap: 13px;
-    margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 145px 220px 50px 220px;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 12px;
 }
 
 .umrechner input {
-    border: none;
-    border-bottom: 1px solid #ccc;
-    background: transparent;
-    padding: 5px;
-    text-align: center;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  padding: 5px;
+  text-align: center;
 }
 
 .umrechner input:focus {
-    outline: none;
-    border-bottom: 1px solid #0077cc;
+  outline: none;
+  border-bottom: 1px solid #0077cc;
 }
 
 .umrechner input::-webkit-inner-spin-button {
-    appearance: none;
+  appearance: none;
 }
 
 .eingabefeld {
-    cursor: text;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 7px 11px;
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(6px);
-    border-radius: 13px;
-    transition: transform 0.2s ease, box-shadow 0.25s ease;
+  cursor: text;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 7px 11px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  border-radius: 13px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
 }
 
 .eingabefeld:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
 }
 
 .title {
-    font-size: 1.34rem;
+  font-size: 1.34rem;
 }
 
 .einheit-label {
-    opacity: 0.6;
-    font-size: 0.99rem;
-    margin-bottom: -4px;
-    text-align: right;
+  opacity: 0.6;
+  font-size: 0.99rem;
+  margin-bottom: -4px;
+  text-align: right;
 }
 
 .header {
-    position: relative;
-    background: linear-gradient(90deg, #005fa3, #0095ff);
-    padding: 17px 0;
-    margin-bottom: 33px;
+  position: relative;
+  background: linear-gradient(90deg, #005fa3, #0095ff);
+  padding: 17px 0;
+  margin-bottom: 33px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
 .umrechner {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .umrechner.last-input-centered {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
-
 
 /* Zentrierung des letzten Elements auf Desktop-Bildschirmen */
 /* Zentriert nur das Eingabefeld in der Zeile auf Desktop-Bildschirmen */
 .umrechner.last-input-centered {
-    grid-template-columns: 145px 1fr; /* 1. Spalte für Text, Rest für das Feld */
+  grid-template-columns: 145px 1fr; /* 1. Spalte für Text, Rest für das Feld */
 }
 
 .umrechner.last-input-centered .eingabefeld {
-    grid-column: 2;             /* Positioniert das Feld in der zweiten Spalte */
-    justify-self: center;       /* Zentriert das Feld horizontal im verbleibenden Raum */
-    max-width: 220px;           /* Behält die Standardbreite bei */
-    width: 100%;
+  grid-column: 2; /* Positioniert das Feld in der zweiten Spalte */
+  justify-self: center; /* Zentriert das Feld horizontal im verbleibenden Raum */
+  max-width: 220px; /* Behält die Standardbreite bei */
+  width: 100%;
 }
 
-
-.op{
-    opacity: 0;
+.op {
+  opacity: 0;
 }
 
-.BTN{
-     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px;
-    height: 60px;
-    border: none;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: all 0.3s ease;
+.BTN {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .BTN:hover {
-    
-    background: rgb(209, 207, 207);
-    box-shadow: 0 10px 18px rgba(0,0,0,0.3);
-    scale: 150%;
+  background: rgb(209, 207, 207);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
+  scale: 150%;
 }
 .BTN:active {
-     box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
 #resetBtn {
-      position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
 }
 
 #resetBtn:hover {
-    top: 62.5%;
+  top: 62.5%;
 }
 
-
 #Next_BTN {
-      position: absolute;
-    bottom: 15px;
-    right: 15px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
 }
 
 #Next_BTN:hover {
-   bottom: 20px
+  bottom: 20px;
 }
 
 #Back_BTN {
-      position: absolute;
-    bottom: 15px;
-    left: 15px;
-    transform: scaleX(-1);
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  transform: scaleX(-1);
 }
 
 #Back_BTN:hover {
-   bottom: 20px
+  bottom: 20px;
 }
 
-
-
 #CopyBtn {
-      position: absolute;
-    bottom: -50px;
-    right: -30px;
-    transform: translateY(-50%);
+  position: absolute;
+  bottom: -50px;
+  right: -30px;
+  transform: translateY(-50%);
 }
 
 #CopyBtn:hover {
-   bottom: -70px
+  bottom: -70px;
 }
 
-
 #site2Btn {
-      position: absolute;
-    top: 50%;
-    left: 20px;
-    transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
 }
 
 #site2Btn:hover {
-    top: 60%;
+  top: 60%;
 }
-
-
-
-
 
 .header h1 {
-    margin: 0;
-    text-align: center;
-    font-size: 57px;
-    color: white;
-    letter-spacing: 1.1px;
+  margin: 0;
+  text-align: center;
+  font-size: 57px;
+  color: white;
+  letter-spacing: 1.1px;
 }
-
 
 sub {
-    font-size: 0.7em;
-    vertical-align: sub;
+  font-size: 0.7em;
+  vertical-align: sub;
 }
 
-
 .Faktor {
-    text-align: right;
-    font-size: 0.99rem; 
-    padding-left: 10px;
-    color: #a89e9e;
+  text-align: right;
+  font-size: 0.99rem;
+  padding-left: 10px;
+  color: #a89e9e;
 }
 
 .gleichheitszeichen {
-    font-size: 1.54rem;
-    padding-left: 20px;
-    text-align: center;
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    border-bottom: none;
+  font-size: 1.54rem;
+  padding-left: 20px;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  border-bottom: none;
 }
 
 .gleichheitszeichen .tooltip-box {
-    font-size: 0.99rem;
-    visibility: hidden;
-    opacity: 0;
-    background-color: #222;
-    color: #fff;
-    text-align: center;
-    padding: 6px 10px;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-40%);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    white-space: nowrap;
-    z-index: 10;
+  font-size: 0.99rem;
+  visibility: hidden;
+  opacity: 0;
+  background-color: #222;
+  color: #fff;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-40%);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  white-space: nowrap;
+  z-index: 10;
 }
 
-.gray-input{
-    background: rgba(200, 200, 200, 0.4);
+.gray-input {
+  background: rgba(200, 200, 200, 0.4);
 }
 
 .gleichheitszeichen .tooltip-box::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(5px);
-    border-width: 5px;
-    border-style: solid;
-    border-color: #222 transparent transparent transparent;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(5px);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #222 transparent transparent transparent;
 }
 
 .gleichheitszeichen:hover .tooltip-box,
 .gleichheitszeichen:focus-within .tooltip-box {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(-6px);
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
 }
 @media (max-width: 650px) {
-
-    .umrechner.last-input-centered {
+  .umrechner.last-input-centered {
     grid-template-columns: 1fr;
-}
+  }
 
-.umrechner.last-input-centered .eingabefeld {
+  .umrechner.last-input-centered .eingabefeld {
     grid-column: auto;
     justify-self: stretch;
     max-width: unset;
     width: 92%;
-}
+  }
 
+  body {
+    padding-bottom: 90px;
+  }
 
-    body{
-        padding-bottom: 90px;
-    }
+  input {
+    font-size: 16px;
+    min-height: 44px;
+  }
 
-    input {
-        font-size: 16px;
-        min-height: 44px;
-    }
+  form {
+    padding: 20px 14px;
+    border-radius: 18px;
+    margin: 12px;
+  }
 
-    form {
-        padding: 20px 14px;
-        border-radius: 18px;
-        margin: 12px;
-    }
+  /* HEADER */
 
-    /* HEADER */
+  .header {
+    padding: 8px 0;
+    margin-bottom: 18px;
+    min-height: 58px;
 
-    .header {
-        padding: 8px 0;
-        margin-bottom: 18px;
-        min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  .header h1 {
+    font-size: 24px;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
 
-    .header h1 {
-        font-size: 24px;
-        letter-spacing: 0.5px;
-        margin: 0;
-    }
+  /* BUTTONS */
 
-    /* BUTTONS */
+  #resetBtn,
+  #site2Btn {
+    width: 38px;
+    height: 38px;
+  }
 
-    #resetBtn,
-    #site2Btn {
-        width: 38px;
-        height: 38px;
-    }
+  #resetBtn {
+    right: 10px;
+  }
 
-    #resetBtn {
-        right: 10px;
-    }
+  #site2Btn {
+    left: 10px;
+  }
 
-    #site2Btn {
-        left: 10px;
-    }
+  #resetBtn svg,
+  #site2Btn svg {
+    width: 20px;
+    height: 20px;
+  }
 
-    #resetBtn svg,
-    #site2Btn svg {
-        width: 20px;
-        height: 20px;
-    }
+  /* TOGGLE */
 
-    /* TOGGLE */
+  .umschalter {
+    position: absolute;
+    top: 50%;
+    right: 52%;
+    transform: translateY(-50%);
 
-    .umschalter {
-        position: absolute;
-        top: 50%;
-        right: 52%;
-        transform: translateY(-50%);
+    width: 2.8em;
+    height: 1.5em;
+  }
 
-        width: 2.8em;
-        height: 1.5em;
-    }
+  .umschalter-knopf {
+    width: 1.1em;
+    height: 1.1em;
+    top: 0.18em;
+    left: 0.18em;
+  }
 
-    .umschalter-knopf {
-        width: 1.1em;
-        height: 1.1em;
-        top: 0.18em;
-        left: 0.18em;
-    }
+  .umschalter input:checked + .umschalter-knopf {
+    transform: translateX(1.2em);
+  }
 
-    .umschalter input:checked + .umschalter-knopf {
-        transform: translateX(1.2em);
-    }
+  /* GRID */
 
-    /* GRID */
+  .umrechner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 34px;
+  }
 
-    .umrechner {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        margin-bottom: 34px;
-    }
+  .umrechner label {
+    text-align: center;
+  }
 
-    .umrechner label {
-        text-align: center;
-    }
+  .gleichheitszeichen {
+    display: none;
+  }
 
-    .gleichheitszeichen {
-        display: none;
-    }
+  /* INPUT BOXES */
 
-    /* INPUT BOXES */
+  .eingabefeld {
+    width: 92%;
+    margin: auto;
 
-    .eingabefeld {
-        width: 92%;
-        margin: auto;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
 
-        padding: 14px 16px;
-        border-radius: 16px;
-    }
+  .eingabefeld input {
+    font-size: 18px;
+    padding: 10px 0;
+    min-height: 48px;
+  }
 
-    .eingabefeld input {
-        font-size: 18px;
-        padding: 10px 0;
-        min-height: 48px;
-    }
+  .einheit-label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
 
-    .einheit-label {
-        font-size: 0.9rem;
-        margin-bottom: 6px;
-    }
+  .title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
 
-    .title {
-        font-size: 1.6rem;
-        line-height: 1.2;
-    }
+  #Next_BTN,
+  #Back_BTN {
+    position: fixed;
+    bottom: 16px;
+    z-index: 1000;
+  }
 
-  
+  #Next_BTN {
+    right: 16px;
+  }
 
-    #Next_BTN,
-    #Back_BTN {
-        position: fixed;
-        bottom: 16px;
-        z-index: 1000;
-    }
+  #Back_BTN {
+    left: 16px;
+  }
 
-    #Next_BTN {
-        right: 16px;
-    }
+  #CopyBtn {
+    width: 52px;
+    height: 52px;
+    right: -8px;
+    bottom: -26px;
+  }
 
-    #Back_BTN {
-        left: 16px;
-    }
+  /* TOUCH DEVICES */
 
-    #CopyBtn {
-        width: 52px;
-        height: 52px;
-        right: -8px;
-        bottom: -26px;
-    }
-
-    /* TOUCH DEVICES */
-
-    input[type="checkbox"] {
-        min-height: 22px;
-    }
+  input[type="checkbox"] {
+    min-height: 22px;
+  }
 }
 
 @media (hover: none) {
-    .eingabefeld:hover {
-        transform: none;
-        box-shadow: none;
-    }
+  .eingabefeld:hover {
+    transform: none;
+    box-shadow: none;
+  }
 
-    #resetBtn:hover {
-        scale: 1;
-        top: 50%;
-        background: white;
-       
-    }
-      #site2Btn:hover {
-        scale: 1;
-        top: 50%;
-        background: white;
-    }
+  #resetBtn:hover {
+    scale: 1;
+    top: 50%;
+    background: white;
+  }
+  #site2Btn:hover {
+    scale: 1;
+    top: 50%;
+    background: white;
+  }
 
-    
-    #Next_BTN:hover {
-        scale: 1;
-        background: white;
-       
-    }
-      #Back_BTN:hover {
-        scale: 1;
-        background: white;
-    }
-   
+  #Next_BTN:hover {
+    scale: 1;
+    background: white;
+  }
+  #Back_BTN:hover {
+    scale: 1;
+    background: white;
+  }
 
-    #CopyBtn:hover {
-        bottom: -30px;
-        scale: 1;
-        background: white;
-    }
+  #CopyBtn:hover {
+    bottom: -30px;
+    scale: 1;
+    background: white;
+  }
 }
-
-
 
 .Triglyceride-warning {
-    margin-top: 20px;
-    text-align: left;
-   font-size: 0.99rem;
-    font-weight: bold;
-    color: white;
-    background: rgb(75, 73, 73);
-    padding: 12px 20px;
-    border-radius: 14px;
+  margin-top: 20px;
+  text-align: left;
+  font-size: 0.99rem;
+  font-weight: bold;
+  color: white;
+  background: rgb(75, 73, 73);
+  padding: 12px 20px;
+  border-radius: 14px;
 }
 
-
-u{
-    font-size: larger;
-    text-decoration: underline; 
+u {
+  font-size: larger;
+  text-decoration: underline;
 }
 
-
-
-body.page-loaded { 
-    opacity: 1; 
+body.page-loaded {
+  opacity: 1;
 }
 
-body.exit-left { 
-    transform: translateX(-40px); 
-    opacity: 0; 
+body.exit-left {
+  transform: translateX(-40px);
+  opacity: 0;
 }
 
-body.exit-right { 
-    transform: translateX(40px); 
-    opacity: 0; 
+body.exit-right {
+  transform: translateX(40px);
+  opacity: 0;
 }
 
-.umschalter input{
-    appearance: none;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #bbbbbb;
-    margin: 0;
-    border-radius: 999px;
+.umschalter input {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #bbbbbb;
+  margin: 0;
+  border-radius: 999px;
 }
 
 .umschalter {
-    position: absolute;
-    top: 50%;
-    right: 60%;   
-    transform: translateY(-50%);
-    width: 3.2em;
-    height: 1.8em;
+  position: absolute;
+  top: 50%;
+  right: 60%;
+  transform: translateY(-50%);
+  width: 3.2em;
+  height: 1.8em;
 }
 
-
-
-
-
 .umschalter-knopf {
-    background-color: #bbbbbb;
-    width: 1.4em;
-    height: 1.4em;
-    box-shadow: 0 0 1px #333333;
-    position: absolute;
-    top: 0.2em;
-    left: 0.2em;
-    pointer-events: none;
-    transition: transform 0.5s ease-in-out;
-    border-radius: 50%;
+  background-color: #bbbbbb;
+  width: 1.4em;
+  height: 1.4em;
+  box-shadow: 0 0 1px #333333;
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  pointer-events: none;
+  transition: transform 0.5s ease-in-out;
+  border-radius: 50%;
 }
 
 .umschalter input:checked {
-    background-color: hsl(216, 98%, 52%);
-    border-color: hsl(216, 98%, 42%);
+  background-color: hsl(216, 98%, 52%);
+  border-color: hsl(216, 98%, 42%);
 }
 
 .umschalter input:checked + .umschalter-knopf {
-    transform: translateX(1.4em);
-    background-color: white;
+  transform: translateX(1.4em);
+  background-color: white;
 }
-
-
 
 .toggle-item {
-    display: grid;
-    display: none;
+  display: grid;
+  display: none;
 }
 
-  #Next_BTN {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-    z-index: 1000;
-    }
+#Next_BTN {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  z-index: 1000;
+}
 
-   @media (max-width: 650px) {
-        input[type="checkbox"] {
-            min-height: 22px;  
-        }
-       
-    }
-
-
-
-    
-
+@media (max-width: 650px) {
+  input[type="checkbox"] {
+    min-height: 22px;
+  }
+}
