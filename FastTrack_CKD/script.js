@@ -55,6 +55,47 @@ document.addEventListener("click", () => {
 });
 
 // =========================
+// CKD-EPI 2021
+// =========================
+
+function calculateCKDEPI2021(age, male, creatinine) {
+  let kappa;
+  let alpha;
+
+  if (male === 1) {
+    // Männer
+
+    kappa = 0.9;
+    alpha = -0.302;
+  } else {
+    // Frauen
+
+    kappa = 0.7;
+    alpha = -0.241;
+  }
+
+  const creatinineRatio = creatinine / kappa;
+
+  const minValue = Math.min(creatinineRatio, 1);
+
+  const maxValue = Math.max(creatinineRatio, 1);
+
+  let egfr =
+    142 *
+    Math.pow(minValue, alpha) *
+    Math.pow(maxValue, -1.2) *
+    Math.pow(0.9938, age);
+
+  // Faktor nur bei Frauen
+
+  if (male === 0) {
+    egfr *= 1.012;
+  }
+
+  return egfr;
+}
+
+// =========================
 // KFRE
 // =========================
 
@@ -83,19 +124,37 @@ function kfre(age, male, egfr, acr) {
 document.getElementById("calculate-button").addEventListener("click", () => {
   const age = Number(document.getElementById("age").value);
 
-  const egfr = Number(document.getElementById("egfr").value);
+  const creatinine = Number(document.getElementById("creatinine").value);
 
   const acr = Number(document.getElementById("acr").value);
 
-  if (age <= 0 || egfr <= 0 || acr <= 0 || selectedGender === null) {
+  // Eingaben überprüfen
+
+  if (age < 18 || creatinine <= 0 || acr <= 0 || selectedGender === null) {
     alert("Bitte alle Werte eingeben und ein Geschlecht auswählen.");
 
     return;
   }
 
+  // =========================
+  // eGFR berechnen
+  // =========================
+
+  const egfr = calculateCKDEPI2021(age, selectedGender, creatinine);
+
+  // eGFR anzeigen
+
+  document.getElementById("egfr-result").value = egfr.toFixed(1);
+
+  // =========================
+  // KFRE berechnen
+  // =========================
+
   const result = kfre(age, selectedGender, egfr, acr);
 
-  document.getElementById("risk2").textContent = result.risk2.toFixed(1) + "%";
+  // Ergebnisse anzeigen
 
-  document.getElementById("risk5").textContent = result.risk5.toFixed(1) + "%";
+  document.getElementById("risk2").textContent = result.risk2.toFixed(2) + "%";
+
+  document.getElementById("risk5").textContent = result.risk5.toFixed(2) + "%";
 });

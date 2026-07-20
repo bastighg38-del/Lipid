@@ -21,18 +21,16 @@
       <!-- GESCHLECHT -->
 
       <div class="dropdown-container">
-        <label> Geschlecht </label>
+        <label>Geschlecht</label>
 
         <div class="custom-dropdown">
           <button class="dropdown-button" type="button">
-            <span class="selected-option"> Option auswählen </span>
-
-            <span class="arrow"> ⌄ </span>
+            <span class="selected-option">Option auswählen</span>
+            <span class="arrow">⌄</span>
           </button>
 
           <div class="dropdown-menu">
             <div class="dropdown-option" data-value="1">männlich</div>
-
             <div class="dropdown-option" data-value="0">weiblich</div>
           </div>
         </div>
@@ -42,39 +40,41 @@
 
       <div class="umrechner last-input-centered">
         <label>
-          <b class="title"> Alter </b>
+          <b class="title">Alter</b>
         </label>
 
         <div class="eingabefeld">
-          <label class="einheit-label"> Jahre </label>
+          <label class="einheit-label">Jahre</label>
 
-          <input
-            id="age"
-            type="number"
-            step="any"
-            min="18"
-            placeholder="z. B. 70"
-          />
+          <input id="age" type="number" step="1" min="18" />
         </div>
       </div>
 
-      <!-- eGFR -->
+      <!-- KREATININ -->
 
       <div class="umrechner last-input-centered">
         <label>
-          <b class="title"> eGFR </b>
+          <b class="title">Kreatinin</b>
         </label>
 
         <div class="eingabefeld">
-          <label class="einheit-label"> ml/min/1.73m² </label>
+          <label class="einheit-label">mg/dl</label>
 
-          <input
-            id="egfr"
-            type="number"
-            step="any"
-            min="0.1"
-            placeholder="z. B. 30"
-          />
+          <input id="creatinine" type="number" step="0.01" min="0.1" />
+        </div>
+      </div>
+
+      <!-- BERECHNETE eGFR -->
+
+      <div class="umrechner last-input-centered">
+        <label>
+          <b class="title">eGFR</b>
+        </label>
+
+        <div class="eingabefeld gray-input">
+          <label class="einheit-label"> ml/min/1,73 m² </label>
+
+          <input disabled id="egfr-result" type="number" />
         </div>
       </div>
 
@@ -82,19 +82,13 @@
 
       <div class="umrechner last-input-centered">
         <label>
-          <b class="title"> UACR </b>
+          <b class="title">UACR</b>
         </label>
 
         <div class="eingabefeld">
-          <label class="einheit-label"> mg/g </label>
+          <label class="einheit-label">mg/g</label>
 
-          <input
-            id="acr"
-            type="number"
-            step="any"
-            min="0.1"
-            placeholder="z. B. 300"
-          />
+          <input id="acr" type="number" step="any" min="0.1" />
         </div>
       </div>
 
@@ -108,13 +102,13 @@
         <div class="boxcontainer">
           2-Jahres-Risiko:
 
-          <strong id="risk2"> — </strong>
+          <strong id="risk2">—</strong>
         </div>
 
         <div class="boxcontainer">
           5-Jahres-Risiko:
 
-          <strong id="risk5"> — </strong>
+          <strong id="risk5">—</strong>
         </div>
       </div>
     </form>
