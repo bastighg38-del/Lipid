@@ -553,3 +553,146 @@ body.exit-right {
     min-height: 22px;
   }
 }
+
+.dropdown-container {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+
+  width: 80%;
+  margin: 0 auto;
+
+  padding: 7px 11px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  border-radius: 13px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.dropdown-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-container label {
+  opacity: 0.6;
+  font-size: 0.99rem;
+  margin-bottom: 3px;
+}
+
+/* Dropdown */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px 5px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+}
+
+.dropdown-button:hover {
+  border-bottom-color: #0077cc;
+}
+
+.dropdown-button span {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+/* Menü */
+.dropdown-menu {
+  position: absolute;
+  z-index: 9999;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+
+  padding: 6px;
+
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 13px;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+}
+
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* Optionen */
+.dropdown-option {
+  padding: 11px 12px;
+  border-radius: 9px;
+
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.dropdown-option:hover {
+  background: rgba(0, 119, 204, 0.1);
+  transform: translateX(3px);
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .dropdown-container {
+    width: 92%;
+    margin: auto;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+
+  .dropdown-button {
+    font-size: 18px;
+    padding: 10px 0;
+    min-height: 48px;
+  }
+
+  .dropdown-option {
+    padding: 14px 12px;
+    font-size: 18px;
+  }
+}
