@@ -140,11 +140,23 @@ document.getElementById("calculate-button").addEventListener("click", () => {
   // eGFR berechnen
   // =========================
 
+  // eGFR berechnen
   const egfr = calculateCKDEPI2021(age, selectedGender, creatinine);
 
   // eGFR anzeigen
-
   document.getElementById("egfr-result").value = egfr.toFixed(1);
+
+  // Prüfen, ob der Risikokalkulator gültig ist
+  if (egfr >= 61) {
+    alert(
+      "Der Risikokalkulator ist nur für eine eGFR unter 61 ml/min validiert, eine Schätzung ist nicht möglich.",
+    );
+
+    document.getElementById("risk2").textContent = "-";
+    document.getElementById("risk5").textContent = "-";
+
+    return;
+  }
 
   // =========================
   // KFRE berechnen
