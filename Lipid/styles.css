@@ -18,6 +18,9 @@ h1 {
 }
 
 form {
+  position: relative;
+  overflow: visible;
+  z-index: 1;
   background: rgba(255, 255, 255, 0.9);
   max-width: 715px;
   margin: auto;
@@ -68,7 +71,6 @@ form {
     transform 0.2s ease,
     box-shadow 0.25s ease;
 }
-
 .eingabefeld:hover {
   transform: translateY(-3px);
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
@@ -97,24 +99,18 @@ form {
   gap: 16px;
 }
 
-.umrechner {
-  margin-bottom: 12px;
-}
-
 .umrechner.last-input-centered {
   margin-bottom: 0;
 }
 
-/* Zentrierung des letzten Elements auf Desktop-Bildschirmen */
-/* Zentriert nur das Eingabefeld in der Zeile auf Desktop-Bildschirmen */
 .umrechner.last-input-centered {
-  grid-template-columns: 145px 1fr; /* 1. Spalte für Text, Rest für das Feld */
+  grid-template-columns: 145px 1fr;
 }
 
 .umrechner.last-input-centered .eingabefeld {
-  grid-column: 2; /* Positioniert das Feld in der zweiten Spalte */
-  justify-self: center; /* Zentriert das Feld horizontal im verbleibenden Raum */
-  max-width: 220px; /* Behält die Standardbreite bei */
+  grid-column: 2;
+  justify-self: center;
+  max-width: 220px;
   width: 100%;
 }
 
@@ -298,8 +294,6 @@ sub {
     margin: 12px;
   }
 
-  /* HEADER */
-
   .header {
     padding: 8px 0;
     margin-bottom: 18px;
@@ -315,8 +309,6 @@ sub {
     letter-spacing: 0.5px;
     margin: 0;
   }
-
-  /* BUTTONS */
 
   #resetBtn,
   #site2Btn {
@@ -337,8 +329,6 @@ sub {
     width: 20px;
     height: 20px;
   }
-
-  /* TOGGLE */
 
   .umschalter {
     position: absolute;
@@ -361,8 +351,6 @@ sub {
     transform: translateX(1.2em);
   }
 
-  /* GRID */
-
   .umrechner {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -376,8 +364,6 @@ sub {
   .gleichheitszeichen {
     display: none;
   }
-
-  /* INPUT BOXES */
 
   .eingabefeld {
     width: 92%;
@@ -424,8 +410,6 @@ sub {
     right: -8px;
     bottom: -26px;
   }
-
-  /* TOUCH DEVICES */
 
   input[type="checkbox"] {
     min-height: 22px;
@@ -541,27 +525,25 @@ body.exit-right {
   display: none;
 }
 
-#Next_BTN {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-  z-index: 1000;
-}
-
-@media (max-width: 650px) {
-  input[type="checkbox"] {
-    min-height: 22px;
-  }
-}
-
 .dropdown-container {
-  position: relative;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  align-items: center;
+  gap: 13px;
+}
 
-  width: 80%;
-  margin: 0 auto;
+.dropdown-container .title {
+  font-size: 1.34rem;
+}
+.custom-dropdown:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+}
+
+.custom-dropdown {
+  width: 100%;
+  max-width: 220px;
+  justify-self: center;
 
   padding: 7px 11px;
   background: rgba(255, 255, 255, 0.65);
@@ -573,18 +555,65 @@ body.exit-right {
     box-shadow 0.25s ease;
 }
 
-.dropdown-container:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+.dropdown-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 7px 5px;
+  min-height: 38px;
+
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
 }
 
+.custom-dropdown {
+  position: relative;
+  z-index: 9999;
+  overflow: visible;
+}
+
+.dropdown-container {
+  position: relative;
+  overflow: visible;
+  z-index: 9999;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+
+  z-index: 999999;
+
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+
+  transition: 0.2s;
+}
+
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
 .dropdown-container label {
   opacity: 0.6;
   font-size: 0.99rem;
   margin-bottom: 3px;
 }
 
-/* Dropdown */
 .custom-dropdown {
   position: relative;
   width: 100%;
@@ -615,7 +644,6 @@ body.exit-right {
   transition: transform 0.2s ease;
 }
 
-/* Menü */
 .dropdown-menu {
   position: absolute;
   z-index: 9999;
@@ -658,7 +686,6 @@ body.exit-right {
   transform: rotate(180deg);
 }
 
-/* Optionen */
 .dropdown-option {
   padding: 11px 12px;
   border-radius: 9px;
@@ -676,7 +703,6 @@ body.exit-right {
   transform: translateX(3px);
 }
 
-/* Mobile */
 @media (max-width: 650px) {
   .dropdown-container {
     width: 92%;
@@ -694,5 +720,133 @@ body.exit-right {
   .dropdown-option {
     padding: 14px 12px;
     font-size: 18px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  form {
+    margin: 20px;
+  }
+
+  .umrechner,
+  .dropdown-container {
+    grid-template-columns: 130px 1fr;
+  }
+
+  .header h1 {
+    font-size: 42px;
+  }
+}
+
+/* Handy */
+@media (max-width: 650px) {
+  body {
+    padding-bottom: 90px;
+  }
+
+  form {
+    margin: 12px;
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .header {
+    padding: 10px 0;
+    margin-bottom: 20px;
+    min-height: 60px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .umrechner,
+  .dropdown-container,
+  .umrechner.last-input-centered {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .umrechner label,
+  .dropdown-container label {
+    text-align: center;
+  }
+
+  .gleichheitszeichen {
+    display: none;
+  }
+
+  .eingabefeld,
+  .custom-dropdown {
+    width: 100%;
+    max-width: none;
+    margin: auto;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+
+  .eingabefeld input,
+  .dropdown-button {
+    font-size: 18px;
+    min-height: 48px;
+  }
+
+  .dropdown-option {
+    font-size: 18px;
+    padding: 14px 12px;
+  }
+
+  #Next_BTN,
+  #Back_BTN {
+    position: fixed;
+    bottom: 16px;
+    z-index: 1000;
+  }
+
+  #Next_BTN {
+    right: 16px;
+  }
+
+  #Back_BTN {
+    left: 16px;
+  }
+
+  #CopyBtn {
+    width: 52px;
+    height: 52px;
+    right: 10px;
+    bottom: 80px;
+  }
+
+  #resetBtn,
+  #site2Btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  #resetBtn {
+    right: 10px;
+  }
+
+  #site2Btn {
+    left: 10px;
+  }
+
+  .umschalter {
+    right: 54%;
+    width: 2.8em;
+    height: 1.5em;
+  }
+
+  .umschalter-knopf {
+    width: 1.1em;
+    height: 1.1em;
+    top: 0.18em;
+    left: 0.18em;
+  }
+
+  .umschalter input:checked + .umschalter-knopf {
+    transform: translateX(1.2em);
   }
 }
