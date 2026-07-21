@@ -530,6 +530,8 @@ body.exit-right {
   grid-template-columns: 145px 1fr;
   align-items: center;
   gap: 13px;
+
+  /*test*/
 }
 
 .dropdown-container .title {
