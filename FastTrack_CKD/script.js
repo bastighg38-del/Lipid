@@ -1,4 +1,7 @@
-// Seite einblenden
+// =========================
+// SEITE EINBLENDEN
+// =========================
+
 window.addEventListener("load", () => {
   document.body.classList.add("page-loaded");
 });
@@ -22,6 +25,12 @@ function showPopup(title, text, icon = "info") {
 }
 
 // =========================
+// LOCAL STORAGE
+// =========================
+
+const STORAGE_KEY = "ckdCalculatorData";
+
+// =========================
 // DROPDOWN
 // =========================
 
@@ -34,20 +43,88 @@ const arrow = dropdown.querySelector(".arrow");
 
 let selectedGender = null;
 
+// =========================
+// DATEN SPEICHERN
+// =========================
+
+function saveData() {
+  const data = {
+    age: document.getElementById("age").value,
+    creatinine: document.getElementById("creatinine").value,
+    acr: document.getElementById("acr").value,
+
+    selectedGender: selectedGender,
+    genderText: selectedOption.textContent,
+
+    egfr: document.getElementById("egfr-result").value,
+    risk2: document.getElementById("risk2").textContent,
+    risk5: document.getElementById("risk5").textContent,
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// =========================
+// DATEN LADEN
+// =========================
+
+function loadData() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+
+  if (!savedData) return;
+
+  const data = JSON.parse(savedData);
+
+  document.getElementById("age").value = data.age || "";
+
+  document.getElementById("creatinine").value = data.creatinine || "";
+
+  document.getElementById("acr").value = data.acr || "";
+
+  if (data.selectedGender !== null && data.selectedGender !== undefined) {
+    selectedGender = Number(data.selectedGender);
+
+    selectedOption.textContent = data.genderText || "Option auswählen";
+  }
+
+  document.getElementById("egfr-result").value = data.egfr || "";
+
+  document.getElementById("risk2").textContent = data.risk2 || "—";
+
+  document.getElementById("risk5").textContent = data.risk5 || "—";
+}
+
+// =========================
+// DROPDOWN ÖFFNEN
+// =========================
+
 button.addEventListener("click", (event) => {
   event.stopPropagation();
+
   menu.classList.toggle("active");
   arrow.classList.toggle("rotate");
 });
 
+// =========================
+// GESCHLECHT AUSWÄHLEN
+// =========================
+
 options.forEach((option) => {
   option.addEventListener("click", () => {
     selectedOption.textContent = option.textContent.trim();
+
     selectedGender = Number(option.dataset.value);
+
     menu.classList.remove("active");
     arrow.classList.remove("rotate");
+
+    saveData();
   });
 });
+
+// =========================
+// DROPDOWN SCHLIESSEN
+// =========================
 
 document.addEventListener("click", () => {
   menu.classList.remove("active");
@@ -71,7 +148,9 @@ function calculateCKDEPI2021(age, male, creatinine) {
   }
 
   const creatinineRatio = creatinine / kappa;
+
   const minValue = Math.min(creatinineRatio, 1);
+
   const maxValue = Math.max(creatinineRatio, 1);
 
   let egfr =
@@ -99,6 +178,7 @@ function kfre(age, male, egfr, acr) {
     0.451 * (Math.log(acr) - 5.137);
 
   const risk2 = 1 - Math.pow(0.9832, Math.exp(lp));
+
   const risk5 = 1 - Math.pow(0.9365, Math.exp(lp));
 
   return {
@@ -113,7 +193,9 @@ function kfre(age, male, egfr, acr) {
 
 document.getElementById("calculate-button").addEventListener("click", () => {
   const age = Number(document.getElementById("age").value);
+
   const creatinine = Number(document.getElementById("creatinine").value);
+
   const acr = Number(document.getElementById("acr").value);
 
   // Fehlende Eingaben
@@ -123,10 +205,11 @@ document.getElementById("calculate-button").addEventListener("click", () => {
       "Bitte alle Werte eingeben und ein Geschlecht auswählen.",
       "warning",
     );
+
     return;
   }
 
-  // Alter unter 18 Jahren
+  // Alter unter 18
   if (age < 18) {
     showPopup(
       "Berechnung nicht möglich",
@@ -135,8 +218,13 @@ document.getElementById("calculate-button").addEventListener("click", () => {
     );
 
     document.getElementById("egfr-result").value = "-";
-    document.getElementById("risk2").textContent = "-";
-    document.getElementById("risk5").textContent = "-";
+
+    document.getElementById("risk2").textContent = "—";
+
+    document.getElementById("risk5").textContent = "—";
+
+    saveData();
+
     return;
   }
 
@@ -144,7 +232,7 @@ document.getElementById("calculate-button").addEventListener("click", () => {
 
   document.getElementById("egfr-result").value = egfr.toFixed(1);
 
-  // Alter > 99 Jahre
+  // Alter über 99
   if (age > 99) {
     showPopup(
       "Berechnung nicht möglich",
@@ -152,12 +240,16 @@ document.getElementById("calculate-button").addEventListener("click", () => {
       "error",
     );
 
-    document.getElementById("risk2").textContent = "-";
-    document.getElementById("risk5").textContent = "-";
+    document.getElementById("risk2").textContent = "—";
+
+    document.getElementById("risk5").textContent = "—";
+
+    saveData();
+
     return;
   }
 
-  // eGFR < 10 ml/min
+  // eGFR unter 10
   if (egfr < 10) {
     showPopup(
       "Berechnung nicht möglich",
@@ -165,12 +257,16 @@ document.getElementById("calculate-button").addEventListener("click", () => {
       "error",
     );
 
-    document.getElementById("risk2").textContent = "-";
-    document.getElementById("risk5").textContent = "-";
+    document.getElementById("risk2").textContent = "—";
+
+    document.getElementById("risk5").textContent = "—";
+
+    saveData();
+
     return;
   }
 
-  // eGFR ≥ 61 ml/min
+  // eGFR ab 61
   if (egfr >= 61) {
     showPopup(
       "Berechnung nicht möglich",
@@ -178,13 +274,66 @@ document.getElementById("calculate-button").addEventListener("click", () => {
       "error",
     );
 
-    document.getElementById("risk2").textContent = "-";
-    document.getElementById("risk5").textContent = "-";
+    document.getElementById("risk2").textContent = "—";
+
+    document.getElementById("risk5").textContent = "—";
+
+    saveData();
+
     return;
   }
 
   const result = kfre(age, selectedGender, egfr, acr);
 
-  document.getElementById("risk2").textContent = result.risk2.toFixed(2) + "%";
-  document.getElementById("risk5").textContent = result.risk5.toFixed(2) + "%";
+  document.getElementById("risk2").textContent = result.risk2.toFixed(0) + "%";
+
+  document.getElementById("risk5").textContent = result.risk5.toFixed(0) + "%";
+
+  saveData();
 });
+
+// =========================
+// INPUTS AUTOMATISCH SPEICHERN
+// =========================
+
+document.querySelectorAll("input").forEach((input) => {
+  input.addEventListener("input", saveData);
+});
+
+// =========================
+// RESET BUTTON
+// =========================
+
+const resetButton = document.getElementById("resetBtn");
+
+if (resetButton) {
+  resetButton.addEventListener("click", () => {
+    // Local Storage löschen
+    localStorage.removeItem(STORAGE_KEY);
+
+    // Eingabefelder leeren
+    document.getElementById("age").value = "";
+
+    document.getElementById("creatinine").value = "";
+
+    document.getElementById("acr").value = "";
+
+    // Geschlecht zurücksetzen
+    selectedGender = null;
+
+    selectedOption.textContent = "Option auswählen";
+
+    // Ergebnisse zurücksetzen
+    document.getElementById("egfr-result").value = "";
+
+    document.getElementById("risk2").textContent = "—";
+
+    document.getElementById("risk5").textContent = "—";
+  });
+}
+
+// =========================
+// GESPEICHERTE DATEN LADEN
+// =========================
+
+loadData();

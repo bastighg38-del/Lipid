@@ -46,6 +46,7 @@ form {
   background: transparent;
   padding: 5px;
   text-align: center;
+  font-size: 20px;
 }
 
 .umrechner input:focus {
@@ -374,7 +375,7 @@ sub {
   }
 
   .eingabefeld input {
-    font-size: 18px;
+    font-size: 20px;
     padding: 10px 0;
     min-height: 48px;
   }
@@ -790,7 +791,7 @@ body.exit-right {
 
   .eingabefeld input,
   .dropdown-button {
-    font-size: 18px;
+    font-size: 20px;
     min-height: 48px;
   }
 
