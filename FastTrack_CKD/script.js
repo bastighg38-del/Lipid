@@ -2,6 +2,62 @@
 // SEITE EINBLENDEN
 // =========================
 
+function berechneCKDStadium(eGFR, acr) {
+  let G;
+  let A;
+  let risiko;
+  let beschreibung;
+
+  // G-Stadium anhand der eGFR
+  if (eGFR >= 90) {
+    G = "G1";
+    beschreibung = "normal bis erhöht (Hyperfiltration)";
+  } else if (eGFR >= 60) {
+    G = "G2";
+    beschreibung = "mild eingeschränkt bis normal";
+  } else if (eGFR >= 45) {
+    G = "G3a";
+    beschreibung = "mild bis mittelschwer eingeschränkt";
+  } else if (eGFR >= 30) {
+    G = "G3b";
+    beschreibung = "schwer bis mittelschwer eingeschränkt";
+  } else if (eGFR >= 15) {
+    G = "G4";
+    beschreibung = "schwer eingeschränkt";
+  } else {
+    G = "G5";
+    beschreibung = "Nierenversagen";
+  }
+
+  // A-Stadium anhand des ACR
+  if (acr < 30) {
+    A = "A1";
+  } else if (acr < 300) {
+    A = "A2";
+  } else {
+    A = "A3";
+  }
+
+  // Risiko aus G- und A-Stadium
+  const risikoTabelle = {
+    G1: { A1: 1, A2: 1, A3: 2 },
+    G2: { A1: 1, A2: 1, A3: 2 },
+    G3a: { A1: 1, A2: 2, A3: 3 },
+    G3b: { A1: 2, A2: 3, A3: 3 },
+    G4: { A1: 3, A2: 3, A3: "4+" },
+    G5: { A1: "4+", A2: "4+", A3: "4+" },
+  };
+
+  risiko = risikoTabelle[G][A];
+
+  return {
+    G,
+    A,
+    risiko,
+    beschreibung,
+  };
+}
+
 window.addEventListener("load", () => {
   document.body.classList.add("page-loaded");
 });
@@ -290,6 +346,50 @@ document.getElementById("calculate-button").addEventListener("click", () => {
   document.getElementById("risk5").textContent = result.risk5.toFixed(0) + "%";
 
   saveData();
+
+  let output = document.getElementById("Resulttext");
+
+  let outputText = "";
+
+  // CKD-Stadium berechnen
+  const ckdErgebnis = berechneCKDStadium(egfr, acr);
+
+  const G = ckdErgebnis.G;
+  const A = ckdErgebnis.A;
+  const risiko = ckdErgebnis.risiko;
+  const beschreibung = ckdErgebnis.beschreibung;
+
+  // Geschlecht
+  if (selectedGender === 1) {
+    outputText +=
+      "Der Patient stellte sich zur Beurteilung der Nierenfunktion vor.<br>";
+  } else {
+    outputText +=
+      "Die Patientin stellte sich zur Beurteilung der Nierenfunktion vor.<br>";
+  }
+
+  // Laborwerte
+  outputText += `
+
+<p>Folgende Laborwerte wurden zur Verfügung gestellt:</p>
+
+<ul>
+    <li>Kreatinin: ${creatinine} mg/dl</li>
+    <li>eGFR (CKD-EPI): ${egfr.toFixed(1)} ml/min/1,73 m²</li>
+    <li>UACR: ${acr} mg/g Kreatinin</li>
+</ul>
+
+`;
+
+  // CKD-Stadium
+  outputText += `
+<p>
+Es liegt eine <strong>${beschreibung}</strong> Nierenfunktion im Stadium
+<strong>${G}${A}</strong> nach KDIGO vor.
+</p>
+`;
+
+  output.innerHTML = outputText;
 });
 
 // =========================
