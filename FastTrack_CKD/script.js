@@ -430,7 +430,7 @@ Es liegt eine <strong>${beschreibung}</strong> Nierenfunktion im Stadium
         Eine Verlaufskontrolle erfolgt in 6 Monaten.
       </p>
       `;
-    } else if (result.risk5 < 40) {
+    } else if (result.risk5 > 40) {
       outputText += `
       <p>  	
         Es liegt eine Nierenfunktionsstörung vor. 
