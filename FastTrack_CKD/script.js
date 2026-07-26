@@ -11,19 +11,19 @@ function berechneCKDStadium(eGFR, acr) {
   // G-Stadium anhand der eGFR
   if (eGFR >= 90) {
     G = "G1";
-    beschreibung = "normal bis erhöht (Hyperfiltration)";
+    beschreibung = "normale bis erhöhte (Hyperfiltration)";
   } else if (eGFR >= 60) {
     G = "G2";
-    beschreibung = "mild eingeschränkt bis normal";
+    beschreibung = "mild eingeschränkte bis normal";
   } else if (eGFR >= 45) {
     G = "G3a";
-    beschreibung = "mild bis mittelschwer eingeschränkt";
+    beschreibung = "mild bis mittelschwer eingeschränkte";
   } else if (eGFR >= 30) {
     G = "G3b";
-    beschreibung = "schwer bis mittelschwer eingeschränkt";
+    beschreibung = "schwer bis mittelschwer eingeschränkte";
   } else if (eGFR >= 15) {
     G = "G4";
-    beschreibung = "schwer eingeschränkt";
+    beschreibung = "schwer eingeschränkte";
   } else {
     G = "G5";
     beschreibung = "Nierenversagen";
@@ -248,6 +248,8 @@ function kfre(age, male, egfr, acr) {
 // =========================
 
 document.getElementById("calculate-button").addEventListener("click", () => {
+  let risikoBerechnen = true;
+
   const age = Number(document.getElementById("age").value);
 
   const creatinine = Number(document.getElementById("creatinine").value);
@@ -280,8 +282,7 @@ document.getElementById("calculate-button").addEventListener("click", () => {
     document.getElementById("risk5").textContent = "—";
 
     saveData();
-
-    return;
+    risikoBerechnen = false;
   }
 
   const egfr = calculateCKDEPI2021(age, selectedGender, creatinine);
@@ -301,8 +302,7 @@ document.getElementById("calculate-button").addEventListener("click", () => {
     document.getElementById("risk5").textContent = "—";
 
     saveData();
-
-    return;
+    risikoBerechnen = false;
   }
 
   // eGFR unter 10
@@ -319,7 +319,7 @@ document.getElementById("calculate-button").addEventListener("click", () => {
 
     saveData();
 
-    return;
+    risikoBerechnen = false;
   }
 
   // eGFR ab 61
@@ -336,18 +336,23 @@ document.getElementById("calculate-button").addEventListener("click", () => {
 
     saveData();
 
-    return;
+    risikoBerechnen = false;
   }
 
   const result = kfre(age, selectedGender, egfr, acr);
 
-  document.getElementById("risk2").textContent = result.risk2.toFixed(0) + "%";
+  if (risikoBerechnen) {
+    document.getElementById("risk2").textContent =
+      result.risk2.toFixed(0) + "%";
 
-  document.getElementById("risk5").textContent = result.risk5.toFixed(0) + "%";
+    document.getElementById("risk5").textContent =
+      result.risk5.toFixed(0) + "%";
 
-  saveData();
+    saveData();
+  }
 
   let output = document.getElementById("Resulttext");
+  output.innerHTML = "";
 
   let outputText = "";
 
@@ -388,6 +393,56 @@ Es liegt eine <strong>${beschreibung}</strong> Nierenfunktion im Stadium
 <strong>${G}${A}</strong> nach KDIGO vor.
 </p>
 `;
+
+  if (egfr > 60) {
+    outputText +=
+      "<p>Spezifische Nephrologische Maßnahmen sind nicht erforderlich. Eine erneute Vorstellung wird in folgenden Situationen empfohlen: Anstieg des Kreatinins über 2 mg/dl, Entwicklung einer Albuminurie von über 1g/mg Kreatinin.</p>";
+  }
+
+  if (risikoBerechnen) {
+    if (result.risk5 <= 5) {
+      outputText += `
+      <p>
+        Spezifische Nephrologische Maßnahmen sind nicht erforderlich.
+        Eine erneute Vorstellung wird in folgenden Situationen empfohlen:
+        Anstieg des Kreatinins über 2 mg/dl oder Entwicklung einer Albuminurie
+        von über 1 g/mg Kreatinin.
+      </p>`;
+    } else if (result.risk5 <= 15) {
+      outputText += `
+      <p>
+       Es liegt eine Nierenfunktionsstörung vor. 
+       Eine typische CKD-Progression ist zu erwarten. 
+       Im Vordergrund steht die Kontrolle der kardiovaskulären Risikofaktoren. 
+       Jährliche Kontrollen bei uns sind empfohlen.
+      </p>
+      <p>
+       Wenn UACR > 30) Ein ACE-Hemmer und ein SGLT2-Inhibitor sollten Bestandteil der Therapie sein.
+      </p>`;
+    } else if (result.risk5 <= 40) {
+      outputText += `
+      <p>  	
+        Es liegt eine Nierenfunktionsstörung vor. 
+        Der Patient wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen und erweiterte Diagnostik durchgeführt. 
+        Wir werden erneut berichten.
+      </p>
+      <p>
+        Eine Verlaufskontrolle erfolgt in 6 Monaten.
+      </p>
+      `;
+    } else if (result.risk5 < 40) {
+      outputText += `
+      <p>  	
+        Es liegt eine Nierenfunktionsstörung vor. 
+        Der Patient wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen. 
+        Wir werden erneut berichten.
+      </p>
+      <p>
+        Eine Verlaufskontrolle erfolgt in 3 Monaten.
+      </p>
+      `;
+    }
+  }
 
   output.innerHTML = outputText;
 });
