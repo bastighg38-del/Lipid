@@ -12,6 +12,73 @@ const factor8 = 10.929;
 // ================== Helper ==================
 const get = (id) => document.getElementById(id);
 
+// ================== Patientendaten ==================
+const PATIENT_FIELDS = [
+  "datum",
+  "patientenId",
+  "geburtsdatum",
+  "groesse",
+  "gewicht",
+  "blutdruck",
+  "geschlecht",
+  "zigaretten",
+  "familie",
+  "schritte",
+  "ernaehrung",
+  "schlaf",
+];
+
+const PATIENT_PREFIX = "patient_";
+
+function savePatientField(id) {
+  const el = get(id);
+  if (!el) return;
+  localStorage.setItem(PATIENT_PREFIX + id, el.value);
+}
+
+function loadPatientFields() {
+  PATIENT_FIELDS.forEach((id) => {
+    const el = get(id);
+    if (!el) return;
+    const saved = localStorage.getItem(PATIENT_PREFIX + id);
+    if (saved !== null) el.value = saved;
+  });
+}
+
+function updateBMI() {
+  const groesseEl = get("groesse");
+  const gewichtEl = get("gewicht");
+  const bmiEl = get("bmi");
+  if (!groesseEl || !gewichtEl || !bmiEl) return;
+
+  const groesse = parseFloat(groesseEl.value);
+  const gewicht = parseFloat(gewichtEl.value);
+
+  if (groesse > 0 && gewicht > 0) {
+    const bmi = gewicht / (groesse / 100) ** 2;
+    bmiEl.value = bmi.toFixed(1).replace(".", ",");
+  } else {
+    bmiEl.value = "";
+  }
+}
+
+function initPatientFields() {
+  loadPatientFields();
+
+  PATIENT_FIELDS.forEach((id) => {
+    const el = get(id);
+    if (!el) return;
+    const evt =
+      el.tagName === "SELECT" || el.type === "date" ? "change" : "input";
+    el.addEventListener(evt, () => {
+      savePatientField(id);
+      if (id === "groesse" || id === "gewicht") updateBMI();
+    });
+  });
+
+  updateBMI();
+}
+
 // ================== Inputs ==================
 const inputs = {};
 for (let i = 1; i <= 38; i++) {
@@ -31,15 +98,17 @@ function saveInput(input) {
 const resetBtn = get("resetBtn");
 resetBtn?.addEventListener("click", () => {
   document.querySelectorAll("input").forEach((i) => (i.value = ""));
+  document.querySelectorAll("select").forEach((s) => (s.value = ""));
   localStorage.clear();
   updateAllCalculated();
+  updateBMI();
 });
 
 // ================== CLICK → FOCUS ==================
 document.querySelectorAll(".eingabefeld").forEach((feld) => {
   feld.addEventListener("click", () => {
-    const input = feld.querySelector("input");
-    if (input && !input.disabled) input.focus();
+    const input = feld.querySelector("input, select");
+    if (input && !input.disabled && !input.readOnly) input.focus();
   });
 });
 
@@ -143,6 +212,7 @@ function updateInput15() {
     Input16.value = "";
   }
 }
+
 function updateInput21and22() {
   const Input3 = inputs[3];
   const Input21 = inputs[21];
@@ -158,14 +228,20 @@ function updateInput21and22() {
     Input22.value = "";
   }
 }
+
 // ================== PAGE LOAD ==================
 window.addEventListener("DOMContentLoaded", () => {
+  // 🔹 Patientendaten initialisieren
+  initPatientFields();
+
   // 🔹 nur ungerade Inputs laden
   const TOGGEL = localStorage.getItem("TOGGEL");
   if (TOGGEL !== null) {
     document.querySelectorAll(".toggle-item").forEach((el) => {
       el.style.display = TOGGEL === "true" ? "grid" : "none";
-      toggle.checked = TOGGEL === "true";
+      if (typeof toggle !== "undefined" && toggle) {
+        toggle.checked = TOGGEL === "true";
+      }
     });
   }
 
@@ -208,7 +284,6 @@ window.addEventListener("DOMContentLoaded", () => {
       if (href === window.location.pathname.split("/").pop()) return;
       e.preventDefault();
 
-      // Add scale effect for smoother transition
       if (link.id === "Back_BTN") {
         document.body.classList.add("exit-right");
         document.body.style.transformOrigin = "right center";
@@ -222,7 +297,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// CSS für staggered animation hinzufügen
+// ================== CSS (injiziert) ==================
 const style = document.createElement("style");
 style.textContent = `
     .fade-in-up {
@@ -239,9 +314,227 @@ style.textContent = `
             transform: translateY(0);
         }
     }
+
+    /* ============================================================
+       PATIENTENDATEN – Design
+       ============================================================ */
+
+    .patient-card {
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 20px;
+        padding: 30px 36px 28px;
+        margin-bottom: 28px;
+        backdrop-filter: blur(8px);
+        box-shadow:
+            0 2px 5px rgba(0, 0, 0, 0.03),
+            0 10px 24px rgba(0, 95, 163, 0.06);
+    }
+
+    .patient-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 24px 0;
+        font-size: 1.35rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        color: #005fa3;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(0, 95, 163, 0.12);
+    }
+
+    .patient-heading svg {
+        flex-shrink: 0;
+        opacity: 0.9;
+    }
+
+    /* ---------- Desktop: 3 Spalten mit großem Abstand ---------- */
+    .patient-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 56px;
+        row-gap: 22px;
+        width: 100%;
+    }
+
+    .patient-grid .eingabefeld {
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        min-width: 0;
+    }
+
+    .patient-grid .eingabefeld:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 95, 163, 0.10);
+        border-color: rgba(0, 119, 204, 0.25);
+    }
+
+    .patient-grid .eingabefeld:focus-within {
+        border-color: #0077cc;
+        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.12);
+        transform: translateY(-1px);
+    }
+
+    .patient-grid .einheit-label {
+        opacity: 0.75;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+        text-align: left;
+        color: #4a5a6a;
+    }
+
+    .patient-grid .eingabefeld input,
+    .patient-grid .eingabefeld select {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        background: transparent;
+        padding: 6px 2px;
+        font-size: 1.05rem;
+        color: #1a1a1a;
+        text-align: left;
+        font-family: inherit;
+        transition: border-color 0.2s ease, background 0.2s ease;
+        border-radius: 0;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .patient-grid .eingabefeld input:focus,
+    .patient-grid .eingabefeld select:focus {
+        outline: none;
+        border-bottom-color: #0077cc;
+        border-bottom-width: 2px;
+        padding-bottom: 5px;
+    }
+
+    .patient-grid .eingabefeld input::placeholder {
+        color: #b0b8c2;
+        font-weight: 400;
+    }
+
+    .patient-grid .eingabefeld input[type="number"]::-webkit-inner-spin-button,
+    .patient-grid .eingabefeld input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .patient-grid .eingabefeld input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    .patient-grid .eingabefeld input[type="date"] {
+        font-size: 1rem;
+        cursor: pointer;
+        color: #1a1a1a;
+    }
+
+    .patient-grid .eingabefeld input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.55;
+        transition: opacity 0.2s ease;
+    }
+
+    .patient-grid .eingabefeld input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        opacity: 1;
+    }
+
+    .patient-grid .eingabefeld select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23005fa3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 2px center;
+        background-size: 14px;
+        padding-right: 24px;
+    }
+
+    .patient-grid .eingabefeld input[readonly] {
+        cursor: default;
+        color: #005fa3;
+        font-weight: 600;
+        border-bottom-color: rgba(0, 119, 204, 0.25);
+    }
+
+    .patient-grid .eingabefeld input[readonly]:focus {
+        border-bottom-width: 1px;
+        border-bottom-color: rgba(0, 119, 204, 0.25);
+        padding-bottom: 6px;
+    }
+
+    /* ---------- Tablet ---------- */
+    @media (max-width: 1100px) {
+        .patient-grid {
+            column-gap: 40px;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .patient-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 32px;
+            row-gap: 20px;
+        }
+
+        .patient-card {
+            padding: 26px 24px 24px;
+        }
+    }
+
+    /* ---------- Handy ---------- */
+    @media (max-width: 650px) {
+        .patient-card {
+            padding: 18px 14px 16px;
+            border-radius: 18px;
+            margin: 12px;
+        }
+
+        .patient-heading {
+            font-size: 1.15rem;
+            margin-bottom: 18px;
+        }
+
+        .patient-grid {
+            grid-template-columns: 1fr;
+            column-gap: 0;
+            row-gap: 12px;
+        }
+
+        .patient-grid .eingabefeld {
+            padding: 12px 16px;
+            border-radius: 14px;
+        }
+
+        .patient-grid .eingabefeld input,
+        .patient-grid .eingabefeld select {
+            font-size: 1.1rem;
+            min-height: 40px;
+        }
+
+        .patient-grid .einheit-label {
+            font-size: 0.78rem;
+        }
+    }
+
+    @media (hover: none) {
+        .patient-grid .eingabefeld:hover {
+            transform: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.07);
+        }
+    }
 `;
 document.head.appendChild(style);
 
+// ================== RECALC PAIRS ==================
 function recalcAllPairs() {
   if (inputs[1]?.value)
     inputs[2].value = (inputs[1].value * factor1).toFixed(2);
@@ -295,15 +588,17 @@ function recalcAllPairs() {
   }
 }
 
+// ================== TOGGLE ==================
 const toggle = document.getElementById("toggel-All");
 
-toggle.addEventListener("change", () => {
+toggle?.addEventListener("change", () => {
   document.querySelectorAll(".toggle-item").forEach((el) => {
     el.style.display = toggle.checked ? "grid" : "none";
     localStorage.setItem("TOGGEL", "" + toggle.checked);
   });
 });
 
+// ================== WEITERE BERECHNUNGEN ==================
 function updateInput23() {
   const TC = inputs[9];
   const HDL = inputs[7];
@@ -333,6 +628,7 @@ function updateInput23() {
   }
 }
 
+// ================== PASTE-PARSER ==================
 document.addEventListener("DOMContentLoaded", () => {
   const fieldMap = {
     "Cholesterin gesamt": "9Input",
@@ -350,7 +646,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       parseAndFill(text);
-
       coolalert();
     }, 50);
   });
@@ -385,7 +680,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (input) {
               input.value = value;
-
               input.dispatchEvent(new Event("input", { bubbles: true }));
             }
           }
@@ -407,6 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ================== UPDATE FUNKTIONEN ==================
 function updateInput25() {
   const Lpa = inputs[18];
   const Input25 = inputs[25];
@@ -521,6 +816,8 @@ function updateFachQuotient(numeratorInput, denominatorInput, outputInput) {
     out.value = "";
   }
 }
+
+// ================== ALERT ==================
 function coolalert() {
   if (typeof Swal !== "undefined") {
     Swal.fire({
@@ -533,7 +830,6 @@ function coolalert() {
       confirmButtonColor: "#4CAF50",
     });
   } else {
-    // Fallback falls SweetAlert nicht geladen ist
     const div = document.createElement("div");
     div.textContent = "✔ Werte eingefügt";
     div.style = `
