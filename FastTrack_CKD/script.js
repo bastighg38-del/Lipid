@@ -414,10 +414,14 @@ function initCKD() {
           outputText += `<p>Spezifische Nephrologische Maßnahmen sind nicht erforderlich. Eine erneute Vorstellung wird in folgenden Situationen empfohlen: Anstieg des Kreatinins über 2 mg/dl oder Entwicklung einer Albuminurie von über 1 g/mg Kreatinin.</p>`;
         } else if (result.risk5 <= 15) {
           outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Eine typische CKD-Progression ist zu erwarten. Im Vordergrund steht die Kontrolle der kardiovaskulären Risikofaktoren. Jährliche Kontrollen bei uns sind empfohlen.</p><p>Wenn UACR > 30) Ein ACE-Hemmer und ein SGLT2-Inhibitor sollten Bestandteil der Therapie sein.</p>`;
-        } else if (result.risk5 <= 40) {
+        } else if (result.risk5 <= 40 && selectedGender === 1) {
           outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Der Patient wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen und erweiterte Diagnostik durchgeführt. Wir werden erneut berichten.</p><p>Eine Verlaufskontrolle erfolgt in 6 Monaten.</p>`;
-        } else if (result.risk5 > 40) {
+        } else if (result.risk5 > 40 && selectedGender === 1) {
           outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Der Patient wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen. Wir werden erneut berichten.</p><p>Eine Verlaufskontrolle erfolgt in 3 Monaten.</p>`;
+        } else if (result.risk5 <= 40 && selectedGender === 0) {
+          outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Die Patientin wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen und erweiterte Diagnostik durchgeführt. Wir werden erneut berichten.</p><p>Eine Verlaufskontrolle erfolgt in 6 Monaten.</p>`;
+        } else if (result.risk5 > 40 && selectedGender === 0) {
+          outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Die Patientin wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen. Wir werden erneut berichten.</p><p>Eine Verlaufskontrolle erfolgt in 3 Monaten.</p>`;
         }
       }
 
