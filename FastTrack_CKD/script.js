@@ -413,7 +413,11 @@ function initCKD() {
         if (result.risk5 <= 5) {
           outputText += `<p>Spezifische Nephrologische Maßnahmen sind nicht erforderlich. Eine erneute Vorstellung wird in folgenden Situationen empfohlen: Anstieg des Kreatinins über 2 mg/dl oder Entwicklung einer Albuminurie von über 1 g/mg Kreatinin.</p>`;
         } else if (result.risk5 <= 15) {
-          outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Eine typische CKD-Progression ist zu erwarten. Im Vordergrund steht die Kontrolle der kardiovaskulären Risikofaktoren. Jährliche Kontrollen bei uns sind empfohlen.</p><p>Wenn UACR > 30) Ein ACE-Hemmer und ein SGLT2-Inhibitor sollten Bestandteil der Therapie sein.</p>`;
+          outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Eine typische CKD-Progression ist zu erwarten. Im Vordergrund steht die Kontrolle der kardiovaskulären Risikofaktoren. Jährliche Kontrollen bei uns sind empfohlen.</p>`;
+
+          if (acr > 30) {
+            outputText += `<p>Ein ACE-Hemmer und ein SGLT2-Inhibitor sollten Bestandteil der Therapie sein.</p>`;
+          }
         } else if (result.risk5 <= 40 && selectedGender === 1) {
           outputText += `<p>Es liegt eine Nierenfunktionsstörung vor. Der Patient wird in unser Programm bei chronischer Niereninsuffizienz aufgenommen und erweiterte Diagnostik durchgeführt. Wir werden erneut berichten.</p><p>Eine Verlaufskontrolle erfolgt in 6 Monaten.</p>`;
         } else if (result.risk5 > 40 && selectedGender === 1) {
@@ -552,6 +556,11 @@ function initNephro() {
 // ZENTRALE RESET-FUNKTION
 // =========================
 function resetAllData() {
+  // In resetAllData() am Ende einfügen:
+  if (document.getElementById("Resulttext"))
+    document.getElementById("Resulttext").innerHTML = "";
+  if (document.getElementById("CopyBtn"))
+    document.getElementById("CopyBtn").style.display = "none";
   // CKD zurücksetzen
   localStorage.removeItem(CKD_STORAGE_KEY);
 
@@ -618,3 +627,76 @@ const resetButton = document.getElementById("resetBtn");
 if (resetButton) {
   resetButton.addEventListener("click", resetAllData);
 }
+
+// =========================
+// COPY BUTTON
+// =========================
+function initCopyButton() {
+  const copyButton = document.getElementById("CopyBtn");
+  const resultText = document.getElementById("Resulttext");
+  if (!copyButton || !resultText) return;
+
+  // Button nur anzeigen, wenn ein Ergebnis vorhanden ist
+  const observer = new MutationObserver(() => {
+    const hasText = resultText.innerText.trim().length > 0;
+    copyButton.style.display = hasText ? "" : "none";
+  });
+  observer.observe(resultText, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  });
+
+  copyButton.addEventListener("click", async () => {
+    const text = resultText.innerText.trim();
+
+    if (!text) {
+      showPopup(
+        "Keine Daten",
+        "Es sind keine Ergebnisse zum Kopieren vorhanden.",
+        "warning",
+      );
+      return;
+    }
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback für unsichere Kontexte / ältere Browser
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      showPopup(
+        "Kopiert!",
+        "Der Befund wurde in die Zwischenablage kopiert.",
+        "success",
+      );
+    } catch (err) {
+      console.error("Copy fehlgeschlagen:", err);
+      showPopup(
+        "Kopieren nicht möglich",
+        "Bitte den Text manuell markieren und kopieren.",
+        "error",
+      );
+    }
+  });
+}
+
+// Reset-Button: Copy-Button nach Reset wieder verstecken
+const originalReset = resetAllData;
+resetAllData = function () {
+  originalReset();
+  const copyBtn = document.getElementById("CopyBtn");
+  if (copyBtn) copyBtn.style.display = "none";
+};
+
+initCopyButton();
