@@ -1,7 +1,6 @@
 // =========================
 // SEITE EINBLENDEN
 // =========================
-
 function berechneCKDStadium(eGFR, acr) {
   let G;
   let A;
@@ -58,7 +57,7 @@ window.addEventListener("load", () => {
 // SWEETALERT2 POPUP
 // =========================
 function showPopup(title, text, icon = "info") {
-  if (typeof Swal === "undefined") return; // SweetAlert nicht geladen – ignorieren
+  if (typeof Swal === "undefined") return;
   Swal.fire({
     title,
     text,
@@ -79,6 +78,12 @@ const CKD_STORAGE_KEY = "ckdCalculatorData";
 const NEPHRO_STORAGE_KEY = "nephroFormData";
 
 // =========================
+// GLOBALE VARIABLEN FÜR CKD
+// =========================
+let selectedGender = null;
+let selectedOption = null;
+
+// =========================
 // HILFSFUNKTION
 // =========================
 function getElementSafe(selector) {
@@ -86,20 +91,71 @@ function getElementSafe(selector) {
 }
 
 // =========================
-// CKD – INITIALISIERUNG NUR, WENN CKD-ELEMENTE VORHANDEN
+// NEPHRO ZUSAMMENFASSUNG GENERIEREN
+// =========================
+function getNephroSummary() {
+  const savedData = localStorage.getItem(NEPHRO_STORAGE_KEY);
+  if (!savedData) return "";
+  const data = JSON.parse(savedData);
+  let summary = "";
+
+  // Atemnot
+  if (data.option1) {
+    summary += "Es wird über Atemnot geklagt.<br>";
+  } else {
+    summary += "Es wird nicht über Atemnot geklagt.<br>";
+  }
+
+  // Geschwollene Beine
+  if (data.option2) {
+    summary += "Geschwollene Beine fielen auf.<br>";
+  } else {
+    summary += "Geschwollene Beine fielen nicht auf.<br>";
+  }
+
+  // Blut im Urin
+  if (data.option3) {
+    summary += "Es wurde Blut im Urin beobachtet.<br>";
+  } else {
+    summary += "Es wurde kein Blut im Urin beobachtet.<br>";
+  }
+
+  // Brennen beim Wasserlassen
+  if (data.option4) {
+    summary += "Beschwerden eines Harnwegsinfektes werden berichtet.<br>";
+  } else {
+    summary +=
+      "Es werden keine Beschwerden eines Harnwegsinfektes berichtet.<br>";
+  }
+
+  // Bluthochdruck
+  if (data.option5) {
+    const jahr = data.jahrblut ? data.jahrblut : "unbekannt";
+    summary += `Es liegt eine arterielle Hypertension seit ca. ${jahr} vor.`;
+    if (data.option6) {
+      const wert = data.obererWert ? data.obererWert : "unbekannt";
+      summary += ` Der Blutdruck liegt in der Selbstmessung bei ${wert} mmHg systolisch.`;
+    }
+    summary += "<br>";
+  } else {
+    summary += "Ein Bluthochdruck ist nicht bekannt.<br>";
+  }
+
+  return summary;
+}
+
+// =========================
+// CKD – INITIALISIERUNG
 // =========================
 function initCKD() {
-  // Prüfen, ob CKD-spezifische Elemente vorhanden sind
   const dropdownElement = getElementSafe(".custom-dropdown");
   const ageInput = document.getElementById("age");
   if (!dropdownElement && !ageInput) {
-    return; // Kein CKD-Teil auf dieser Seite
+    return;
   }
 
-  // ----- Dropdown -----
   const dropdown = dropdownElement;
-  let button, menu, options, selectedOption, arrow;
-  let selectedGender = null;
+  let button, menu, options, arrow;
 
   if (dropdown) {
     button = dropdown.querySelector(".dropdown-button");
@@ -109,7 +165,6 @@ function initCKD() {
     arrow = dropdown.querySelector(".arrow");
   }
 
-  // ----- CKD Speichern / Laden -----
   function saveCKDData() {
     const data = {
       age: document.getElementById("age")?.value || "",
@@ -153,7 +208,7 @@ function initCKD() {
       document.getElementById("risk5").textContent = data.risk5 || "—";
   }
 
-  // ----- Dropdown Events -----
+  // Dropdown Events
   if (button && menu && arrow) {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -180,7 +235,7 @@ function initCKD() {
     if (arrow) arrow.classList.remove("rotate");
   });
 
-  // ----- CKD Berechnung -----
+  // CKD Berechnung
   function calculateCKDEPI2021(age, male, creatinine) {
     let kappa, alpha;
     if (male === 1) {
@@ -366,11 +421,17 @@ function initCKD() {
         }
       }
 
+      // Nephro-Anamnese anhängen
+      const nephroSummary = getNephroSummary();
+      if (nephroSummary) {
+        outputText += `<p><strong>Nephrologische Anamnese:</strong></p><p>${nephroSummary}</p>`;
+      }
+
       output.innerHTML = outputText;
     });
   }
 
-  // ----- CKD Inputs automatisch speichern (nur die vorhandenen) -----
+  // CKD Inputs automatisch speichern
   const ckdInputIds = ["age", "creatinine", "acr"];
   ckdInputIds.forEach((id) => {
     const input = document.getElementById(id);
@@ -379,40 +440,45 @@ function initCKD() {
     }
   });
 
-  // ----- CKD Reset -----
-  const resetButton = document.getElementById("resetBtn");
-  if (resetButton) {
-    resetButton.addEventListener("click", () => {
-      localStorage.removeItem(CKD_STORAGE_KEY);
-      if (document.getElementById("age"))
-        document.getElementById("age").value = "";
-      if (document.getElementById("creatinine"))
-        document.getElementById("creatinine").value = "";
-      if (document.getElementById("acr"))
-        document.getElementById("acr").value = "";
-      selectedGender = null;
-      if (selectedOption) selectedOption.textContent = "Option auswählen";
-      if (document.getElementById("egfr-result"))
-        document.getElementById("egfr-result").value = "";
-      if (document.getElementById("risk2"))
-        document.getElementById("risk2").textContent = "—";
-      if (document.getElementById("risk5"))
-        document.getElementById("risk5").textContent = "—";
-    });
-  }
-
-  // ----- CKD Daten laden -----
+  // CKD Daten laden
   loadCKDData();
 }
 
 // =========================
-// NEPHRO – INITIALISIERUNG NUR, WENN NEPHRO-ELEMENTE VORHANDEN
+// NEPHRO – INITIALISIERUNG
 // =========================
 function initNephro() {
-  // Prüfen, ob mindestens eine Nephro-Checkbox existiert
   const firstCheckbox = document.getElementById("option1");
   if (!firstCheckbox) {
-    return; // Kein Nephro-Teil
+    return;
+  }
+
+  function updateNephroVisibility() {
+    const option5Checked = document.getElementById("option5")?.checked || false;
+    const option6Checked = document.getElementById("option6")?.checked || false;
+
+    const jahrblutContainer = document
+      .getElementById("jahrblut")
+      ?.closest(".umrechner");
+    const option6Container = document
+      .getElementById("option6")
+      ?.closest(".checkbox-container");
+    const obererWertContainer = document
+      .getElementById("obererWert")
+      ?.closest(".umrechner");
+
+    if (jahrblutContainer) {
+      jahrblutContainer.style.display = option5Checked ? "" : "none";
+    }
+
+    if (option6Container) {
+      option6Container.style.display = option5Checked ? "" : "none";
+    }
+
+    if (obererWertContainer) {
+      obererWertContainer.style.display =
+        option5Checked && option6Checked ? "" : "none";
+    }
   }
 
   function saveNephroData() {
@@ -452,7 +518,6 @@ function initNephro() {
       document.getElementById("obererWert").value = data.obererWert || "";
   }
 
-  // ----- Nephro-Inputs automatisch speichern -----
   const nephroInputIds = [
     "option1",
     "option2",
@@ -467,11 +532,75 @@ function initNephro() {
     const input = document.getElementById(id);
     if (input) {
       input.addEventListener("input", saveNephroData);
-      input.addEventListener("change", saveNephroData); // für Checkboxen
+      input.addEventListener("change", saveNephroData);
+
+      if (id === "option5" || id === "option6") {
+        input.addEventListener("change", updateNephroVisibility);
+      }
     }
   });
 
   loadNephroData();
+  updateNephroVisibility();
+}
+
+// =========================
+// ZENTRALE RESET-FUNKTION
+// =========================
+function resetAllData() {
+  // CKD zurücksetzen
+  localStorage.removeItem(CKD_STORAGE_KEY);
+
+  if (document.getElementById("age")) document.getElementById("age").value = "";
+  if (document.getElementById("creatinine"))
+    document.getElementById("creatinine").value = "";
+  if (document.getElementById("acr")) document.getElementById("acr").value = "";
+
+  selectedGender = null;
+  if (selectedOption) selectedOption.textContent = "Option auswählen";
+
+  if (document.getElementById("egfr-result"))
+    document.getElementById("egfr-result").value = "";
+  if (document.getElementById("risk2"))
+    document.getElementById("risk2").textContent = "—";
+  if (document.getElementById("risk5"))
+    document.getElementById("risk5").textContent = "—";
+
+  // Nephro zurücksetzen
+  localStorage.removeItem(NEPHRO_STORAGE_KEY);
+
+  const nephroCheckboxIds = [
+    "option1",
+    "option2",
+    "option3",
+    "option4",
+    "option5",
+    "option6",
+  ];
+  nephroCheckboxIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+
+  const nephroInputIds = ["jahrblut", "obererWert"];
+  nephroInputIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  const jahrblutContainer = document
+    .getElementById("jahrblut")
+    ?.closest(".umrechner");
+  const option6Container = document
+    .getElementById("option6")
+    ?.closest(".checkbox-container");
+  const obererWertContainer = document
+    .getElementById("obererWert")
+    ?.closest(".umrechner");
+
+  if (jahrblutContainer) jahrblutContainer.style.display = "none";
+  if (option6Container) option6Container.style.display = "none";
+  if (obererWertContainer) obererWertContainer.style.display = "none";
 }
 
 // =========================
@@ -479,3 +608,9 @@ function initNephro() {
 // =========================
 initCKD();
 initNephro();
+
+// Reset-Button registrieren
+const resetButton = document.getElementById("resetBtn");
+if (resetButton) {
+  resetButton.addEventListener("click", resetAllData);
+}
