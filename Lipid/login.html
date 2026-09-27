@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lipids – Login</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+    />
+    <script src="auth.js" defer></script>
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+      }
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 34px 30px;
+        box-shadow:
+          0 3px 6px rgba(0, 0, 0, 0.05),
+          0 12px 30px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(10px);
+      }
+      .login-card h1 {
+        text-align: center;
+        margin: 0 0 26px 0;
+        font-size: 2rem;
+        color: #005fa3;
+      }
+      .login-card label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #4a5a6a;
+        margin: 14px 0 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .login-card input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        box-sizing: border-box;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .login-card input:focus {
+        border-color: #0077cc;
+        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.15);
+      }
+      .btn-primary,
+      .btn-ghost {
+        width: 100%;
+        padding: 13px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.25s ease;
+        margin-top: 18px;
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, #005fa3, #0095ff);
+        color: white;
+        box-shadow: 0 6px 14px rgba(0, 95, 163, 0.3);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 95, 163, 0.35);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #005fa3;
+        border: 2px solid #005fa3;
+        margin-top: 10px;
+      }
+      .btn-ghost:hover {
+        background: rgba(0, 95, 163, 0.08);
+      }
+      #login-msg {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 0.95rem;
+        min-height: 1.2em;
+      }
+      .error {
+        color: #dc2626;
+      }
+      .success {
+        color: #16a34a;
+      }
+      .hint {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-card">
+      <h1>Lipids</h1>
+
+      <form id="loginForm">
+        <label for="username">Benutzername</label>
+        <input id="username" type="text" autocomplete="username" required />
+
+        <label for="password">Passwort</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+
+        <button type="submit" class="btn-primary">Einloggen</button>
+      </form>
+
+      <button type="button" class="btn-ghost" id="guestBtn">
+        Als Gast fortfahren
+      </button>
+
+      <div id="login-msg"></div>
+      <div class="hint">Gäste haben nur Zugriff auf die Hauptseite.</div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("loginForm");
+        const msg = document.getElementById("login-msg");
+
+        // Falls schon eingeloggt → direkt weiter
+        if (isLoggedIn() || isGuest()) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const u = document.getElementById("username").value.trim();
+          const p = document.getElementById("password").value;
+
+          msg.className = "";
+          msg.textContent = "Einloggen...";
+
+          try {
+            await loginUser(u, p);
+            msg.className = "success";
+            msg.textContent = "✔ Erfolgreich eingeloggt.";
+            setTimeout(() => (window.location.href = "index.html"), 400);
+          } catch (err) {
+            msg.className = "error";
+            msg.textContent = "❌ " + err.message;
+          }
+        });
+
+        document
+          .getElementById("guestBtn")
+          .addEventListener("click", loginAsGuest);
+      });
+    </script>
+  </body>
+</html>

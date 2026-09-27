@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lipids – Daten &amp; Diagramm</title>
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../favicon-16x16.png"
+    />
+    <link rel="manifest" href="../site.webmanifest" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="../auth.js" defer></script>
+
+    <style>
+      body {
+        opacity: 1 !important;
+      }
+
+      .data-box {
+        max-width: 1400px;
+        margin: 0 auto 30px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 26px;
+        box-shadow:
+          0 3px 6px rgba(0, 0, 0, 0.05),
+          0 12px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .data-box h2 {
+        margin-top: 0;
+        color: #005fa3;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 2800px;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        background: #f3f4f6;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      tr:hover td {
+        background: #f9fafb;
+      }
+
+      .delete-button {
+        background: #dc2626;
+        border: 0;
+        color: #fff;
+        padding: 7px 10px;
+        font-size: 13px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .delete-button:hover {
+        background: #b91c1c;
+      }
+
+      .empty {
+        text-align: center;
+        color: #6b7280;
+        padding: 30px;
+      }
+
+      .chart-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .chart-controls input {
+        flex: 1;
+        min-width: 220px;
+        padding: 12px 14px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        font-size: 15px;
+        outline: none;
+      }
+
+      .chart-controls input:focus {
+        border-color: #0077cc;
+        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.15);
+      }
+
+      .chart-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 12px 18px;
+        border: 0;
+        border-radius: 12px;
+        background: #16a34a;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .chart-button:hover {
+        background: #15803d;
+      }
+
+      .fullscreen-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 12px 18px;
+        border: 0;
+        border-radius: 12px;
+        background: #2563eb;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .fullscreen-button:hover {
+        background: #1d4ed8;
+      }
+
+      .chart-button svg,
+      .fullscreen-button svg {
+        flex-shrink: 0;
+      }
+
+      #chart-message {
+        margin: 12px 0 10px;
+        text-align: center;
+        min-height: 1.2em;
+      }
+
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 750px;
+        margin-top: 15px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .patient-chart {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: none;
+        background: #fff;
+      }
+
+      .chart-container:fullscreen,
+      .chart-container:-webkit-full-screen {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        border: 0;
+        margin: 0;
+      }
+
+      .chart-container:fullscreen .patient-chart,
+      .chart-container:-webkit-full-screen .patient-chart {
+        width: 100%;
+        height: 100%;
+      }
+
+      .error {
+        color: #dc2626;
+      }
+
+      .success {
+        color: #16a34a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ================================
+         HEADER
+         ================================ -->
+    <div class="header">
+      <a
+        href="Formular1.html"
+        id="site2Btn"
+        class="BTN"
+        title="Zurück zu Formular 1"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="FFFFFF"
+        >
+          <path
+            d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z"
+          />
+        </svg>
+      </a>
+
+      <h1>Daten &amp; Diagramm</h1>
+
+      <button type="button" id="resetBtn" class="BTN" title="Zurücksetzen">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          width="24"
+          viewBox="0 -960 960 960"
+          fill="black"
+        >
+          <path
+            d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- ============================================
+         TABELLE
+    ============================================= -->
+    <div class="data-box">
+      <h2>Gespeicherte Daten</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Datum</th>
+              <th>Gesamt-Cholesterin</th>
+              <th>HDL-C</th>
+              <th>eLDL-C</th>
+              <th>gLDL-C</th>
+              <th>non-HDL-C</th>
+              <th>Triglyzeride</th>
+              <th>ApoB</th>
+              <th>Lp(a)</th>
+              <th>HbA1c</th>
+              <th>Kreatinin</th>
+              <th>eRemnant-C</th>
+              <th>eLDL-CS</th>
+              <th>Lp(a)-CRM</th>
+              <th>CorrLDL-CRM</th>
+              <th>Lp(a)-CAHA</th>
+              <th>ΔLDL-C</th>
+              <th>Non-HDL-C / ApoB</th>
+              <th>TG / ApoB</th>
+              <th>Gesamtcholesterin / ApoB</th>
+              <th>LDL-C / ApoB</th>
+              <th>PatientenID</th>
+              <th>Geburtsdatum</th>
+              <th>Größe</th>
+              <th>Gewicht</th>
+              <th>Blutdruck</th>
+              <th>Geschlecht</th>
+              <th>Zigarettenprotag</th>
+              <th>Familie</th>
+              <th>Schritte</th>
+              <th>Ernährung</th>
+              <th>Schlaf</th>
+              <th>Aktion</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody">
+            <tr>
+              <td colspan="34" class="empty">Daten werden geladen...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button
+        class="chart-button"
+        style="margin-top: 16px"
+        onclick="loadData()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20"
+          width="20"
+          viewBox="0 -960 960 960"
+          fill="#FFFFFF"
+        >
+          <path
+            d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
+          />
+        </svg>
+        Aktualisieren
+      </button>
+    </div>
+
+    <!-- ============================================
+         DIAGRAMM
+    ============================================= -->
+    <div class="data-box">
+      <h2>Patientendiagramm (Netzdiagramm)</h2>
+      <div class="chart-controls">
+        <input
+          id="chartPatientId"
+          type="text"
+          placeholder="PatientenID z.B. 1111"
+        />
+        <button class="chart-button" onclick="loadPatientChart()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="20"
+            width="20"
+            viewBox="0 -960 960 960"
+            fill="#FFFFFF"
+          >
+            <path
+              d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
+            />
+          </svg>
+          Diagramm anzeigen
+        </button>
+        <button class="fullscreen-button" onclick="toggleChartFullscreen()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="20"
+            width="20"
+            viewBox="0 -960 960 960"
+            fill="#FFFFFF"
+          >
+            <path
+              d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
+            />
+          </svg>
+          Vollbild
+        </button>
+      </div>
+      <div id="chart-message"></div>
+      <div id="chart-container" class="chart-container">
+        <iframe
+          id="patient-chart"
+          class="patient-chart"
+          title="Patientendiagramm"
+        ></iframe>
+      </div>
+    </div>
+
+    <a href="Formular1.html" id="Back_BTN" class="BTN" title="Zurück">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="FFFFFF"
+      >
+        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+      </svg>
+    </a>
+
+    <script>
+      // ============================================================
+      //  FIELDS (Reihenfolge wie CSV)
+      // ============================================================
+      const FIELDS = [
+        "Datum",
+        "Gesamt-Cholesterin",
+        "HDL-C",
+        "eLDL-C",
+        "gLDL-C",
+        "non-HDL-C",
+        "Triglyzeride",
+        "ApoB",
+        "Lp(a)",
+        "HbA1c",
+        "Kreatinin",
+        "eRemnant-C",
+        "eLDL-CS",
+        "Lp(a)-CRM",
+        "CorrLDL-CRM",
+        "Lp(a)-CAHA",
+        "ΔLDL-C",
+        "Non-HDL-C / ApoB",
+        "TG / ApoB",
+        "Gesamtcholesterin / ApoB",
+        "LDL-C / ApoB",
+        "PatientenID",
+        "Geburtsdatum",
+        "Größe",
+        "Gewicht",
+        "Blutdruck",
+        "Geschlecht",
+        "Zigarettenprotag",
+        "Familie",
+        "Schritte",
+        "Ernährung",
+        "Schlaf",
+      ];
+
+      // ============================================================
+      //  KONSTANTEN
+      // ============================================================
+      const PATIENT_IDS = [
+        "datum",
+        "patientenId",
+        "geburtsdatum",
+        "groesse",
+        "gewicht",
+        "blutdruck",
+        "geschlecht",
+        "zigaretten",
+        "familie",
+        "schritte",
+        "ernaehrung",
+        "schlaf",
+      ];
+
+      const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
+
+      // ============================================================
+      //  START
+      // ============================================================
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("page-loaded");
+
+        if (!requireLogin()) return;
+
+        loadData();
+
+        document
+          .getElementById("chartPatientId")
+          .addEventListener("keydown", (e) => {
+            if (e.key === "Enter") loadPatientChart();
+          });
+
+        document
+          .getElementById("resetBtn")
+          ?.addEventListener("click", resetPage);
+      });
+
+      // ============================================================
+      //  RESET
+      // ============================================================
+      function resetPage() {
+        // 1) Chart-Bereich zurücksetzen
+        const pidInput = document.getElementById("chartPatientId");
+        if (pidInput) pidInput.value = "";
+
+        const msg = document.getElementById("chart-message");
+        if (msg) msg.innerHTML = "";
+
+        const chart = document.getElementById("patient-chart");
+        if (chart) {
+          chart.style.display = "none";
+          chart.src = "about:blank";
+        }
+
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen)
+            document.webkitExitFullscreen();
+        }
+
+        // 2) localStorage: Patientendaten löschen
+        PATIENT_IDS.forEach((id) => {
+          localStorage.removeItem("patient_" + id);
+        });
+
+        // 3) localStorage: Rechner-Werte löschen
+        RECHNER_IDS.forEach((n) => {
+          localStorage.removeItem(`${n}Input`);
+        });
+
+        // 4) Tabelle neu laden
+        loadData();
+      }
+
+      // ============================================================
+      //  CSV PARSER
+      // ============================================================
+      function parseCSV(csv) {
+        const lines = csv.trim().split(/\r?\n/);
+        if (lines.length <= 1) return [];
+
+        const headers = lines[0].split(",");
+        const rows = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(",");
+          const row = {};
+          headers.forEach((h, idx) => {
+            row[h.trim()] = values[idx] || "";
+          });
+          rows.push(row);
+        }
+        return rows;
+      }
+
+      // ============================================================
+      //  DATEN LADEN
+      // ============================================================
+      async function loadData() {
+        const body = document.getElementById("dataBody");
+        body.innerHTML = `<tr><td colspan="34" class="empty">Daten werden geladen...</td></tr>`;
+
+        try {
+          const res = await fetch(`${API_URL}/read`, {
+            headers: authHeaders(),
+          });
+
+          if (res.status === 401) {
+            logout();
+            return;
+          }
+          if (!res.ok) throw new Error("Fehler beim Laden");
+
+          const result = await res.json();
+          const rows = parseCSV(result.data || "");
+
+          if (!rows.length) {
+            body.innerHTML = `<tr><td colspan="34" class="empty">Noch keine Daten vorhanden.</td></tr>`;
+            return;
+          }
+
+          body.innerHTML = "";
+
+          rows.forEach((row, index) => {
+            const tr = document.createElement("tr");
+
+            const addCell = (val) => {
+              const td = document.createElement("td");
+              td.textContent = val ?? "";
+              tr.appendChild(td);
+            };
+
+            addCell(index);
+            FIELDS.forEach((f) => addCell(row[f] || ""));
+
+            const actionTd = document.createElement("td");
+            const del = document.createElement("button");
+            del.textContent = "Löschen";
+            del.className = "delete-button";
+            del.onclick = () => deleteRow(index);
+            actionTd.appendChild(del);
+            tr.appendChild(actionTd);
+
+            body.appendChild(tr);
+          });
+        } catch (err) {
+          console.error(err);
+          body.innerHTML = `<tr><td colspan="34" class="empty error">Daten konnten nicht geladen werden.</td></tr>`;
+        }
+      }
+
+      // ============================================================
+      //  LÖSCHEN
+      // ============================================================
+      async function deleteRow(id) {
+        if (!confirm(`Zeile ${id} wirklich löschen?`)) return;
+
+        try {
+          const res = await fetch(`${API_URL}/delete-row/${id}`, {
+            method: "DELETE",
+            headers: authHeaders(),
+          });
+
+          if (res.status === 401) {
+            logout();
+            return;
+          }
+
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.detail || "Fehler beim Löschen");
+
+          loadData();
+        } catch (err) {
+          alert("Fehler: " + err.message);
+        }
+      }
+
+      // ============================================================
+      //  DIAGRAMM
+      // ============================================================
+      async function loadPatientChart() {
+        const input = document.getElementById("chartPatientId");
+        const message = document.getElementById("chart-message");
+        const chart = document.getElementById("patient-chart");
+
+        let pid = input.value.trim();
+        if (!pid) {
+          message.innerHTML =
+            '<span class="error">Bitte eine PatientenID eingeben.</span>';
+          return;
+        }
+
+        const numericId = Number(pid);
+        if (!Number.isFinite(numericId)) {
+          message.innerHTML =
+            '<span class="error">Ungültige PatientenID.</span>';
+          return;
+        }
+        pid = String(numericId);
+
+        message.textContent = "Diagramm wird geladen...";
+        chart.style.display = "none";
+
+        try {
+          const res = await fetch(
+            `${API_URL}/plot/${encodeURIComponent(pid)}`,
+            { headers: authHeaders() },
+          );
+
+          if (res.status === 401) {
+            logout();
+            return;
+          }
+          if (res.status === 404) {
+            message.innerHTML =
+              '<span class="error">Keine Daten für diese PatientenID gefunden.</span>';
+            return;
+          }
+          if (!res.ok) throw new Error("Fehler beim Laden des Diagramms.");
+
+          const html = await res.text();
+          const blob = new Blob([html], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
+
+          chart.src = url;
+          chart.style.display = "block";
+
+          message.innerHTML = `<span class="success">Diagramm für PatientenID ${pid}</span>`;
+        } catch (err) {
+          console.error(err);
+          message.innerHTML = `<span class="error">${err.message}</span>`;
+        }
+      }
+
+      // ============================================================
+      //  FULLSCREEN
+      // ============================================================
+      async function toggleChartFullscreen() {
+        const container = document.getElementById("chart-container");
+
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) await document.exitFullscreen();
+          else if (document.webkitExitFullscreen)
+            await document.webkitExitFullscreen();
+          return;
+        }
+
+        try {
+          if (container.requestFullscreen) await container.requestFullscreen();
+          else if (container.webkitRequestFullscreen)
+            await container.webkitRequestFullscreen();
+        } catch (e) {
+          console.error("Fullscreen Fehler:", e);
+        }
+      }
+    </script>
+  </body>
+</html>
