@@ -28,10 +28,6 @@
     <script src="../auth.js" defer></script>
 
     <style>
-      body {
-        opacity: 1 !important;
-      }
-
       .data-box {
         max-width: 1400px;
         margin: 0 auto 30px;
@@ -392,7 +388,7 @@
 
     <script>
       // ============================================================
-      //  FIELDS (Reihenfolge wie CSV)
+      //  FIELDS
       // ============================================================
       const FIELDS = [
         "Datum",
@@ -450,9 +446,42 @@
       const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
 
       // ============================================================
+      //  SLIDE-ANIMATION ZWISCHEN SEITEN
+      // ============================================================
+      function initPageTransitions() {
+        document.querySelectorAll("a[href]").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const href = link.getAttribute("href");
+            if (
+              !href ||
+              href === "#" ||
+              href.startsWith("http") ||
+              link.target === "_blank"
+            )
+              return;
+
+            if (href === window.location.pathname.split("/").pop()) return;
+
+            e.preventDefault();
+
+            if (link.id === "Back_BTN") {
+              document.body.classList.add("exit-right");
+              document.body.style.transformOrigin = "right center";
+            } else {
+              document.body.classList.add("exit-left");
+              document.body.style.transformOrigin = "left center";
+            }
+
+            setTimeout(() => (window.location.href = href), 450);
+          });
+        });
+      }
+
+      // ============================================================
       //  START
       // ============================================================
       document.addEventListener("DOMContentLoaded", () => {
+        // Fade-In sofort
         document.body.classList.add("page-loaded");
 
         if (!requireLogin()) return;
@@ -468,13 +497,14 @@
         document
           .getElementById("resetBtn")
           ?.addEventListener("click", resetPage);
+
+        initPageTransitions();
       });
 
       // ============================================================
       //  RESET
       // ============================================================
       function resetPage() {
-        // 1) Chart-Bereich zurücksetzen
         const pidInput = document.getElementById("chartPatientId");
         if (pidInput) pidInput.value = "";
 
@@ -493,17 +523,14 @@
             document.webkitExitFullscreen();
         }
 
-        // 2) localStorage: Patientendaten löschen
         PATIENT_IDS.forEach((id) => {
           localStorage.removeItem("patient_" + id);
         });
 
-        // 3) localStorage: Rechner-Werte löschen
         RECHNER_IDS.forEach((n) => {
           localStorage.removeItem(`${n}Input`);
         });
 
-        // 4) Tabelle neu laden
         loadData();
       }
 

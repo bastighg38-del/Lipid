@@ -1,3 +1,6 @@
+/* ============================================================
+   BASE
+   ============================================================ */
 body {
   margin: 0;
   padding: 0;
@@ -10,6 +13,18 @@ body {
     opacity 0.4s ease;
 }
 
+body.page-loaded {
+  opacity: 1;
+}
+body.exit-left {
+  transform: translateX(-40px);
+  opacity: 0;
+}
+body.exit-right {
+  transform: translateX(40px);
+  opacity: 0;
+}
+
 h1 {
   text-align: center;
   padding: 17px 0;
@@ -17,6 +32,19 @@ h1 {
   letter-spacing: 1.1px;
 }
 
+sub {
+  font-size: 0.7em;
+  vertical-align: sub;
+}
+
+u {
+  font-size: larger;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   FORM / UMECHNER
+   ============================================================ */
 form {
   position: relative;
   overflow: visible;
@@ -72,6 +100,7 @@ form {
     transform 0.2s ease,
     box-shadow 0.25s ease;
 }
+
 .eingabefeld:hover {
   transform: translateY(-3px);
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
@@ -88,33 +117,24 @@ form {
   text-align: right;
 }
 
-.header {
-  position: relative;
-  background: linear-gradient(90deg, #005fa3, #0095ff);
-  padding: 17px 0;
-  margin-bottom: 33px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
+.gray-input {
+  background: rgba(200, 200, 200, 0.4);
+}
+.op {
+  opacity: 0;
 }
 
+/* Sonderfall letzte Zeile (Non-HDL/…/Quotienten) */
 .umrechner.last-input-centered {
   margin-bottom: 0;
-}
-
-.umrechner.last-input-centered {
   grid-template-columns: 145px 1fr;
 }
-
 .umrechner.last-input-centered .eingabefeld {
   grid-column: 2;
   justify-self: center;
   max-width: 220px;
   width: 100%;
 }
-
 .umrechner.last-input-centered2 .eingabefeld {
   grid-column: 2;
   justify-self: left;
@@ -122,108 +142,7 @@ form {
   width: 100%;
 }
 
-.op {
-  opacity: 0;
-}
-
-.BTN {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.BTN:hover {
-  background: rgb(209, 207, 207);
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
-  scale: 150%;
-}
-.BTN:active {
-  box-sizing: border-box;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-#resetBtn {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-}
-
-#resetBtn:hover {
-  top: 62.5%;
-}
-
-#Next_BTN {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-}
-
-#Next_BTN:hover {
-  bottom: 20px;
-}
-
-#Back_BTN {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  transform: scaleX(-1);
-}
-
-#Back_BTN:hover {
-  bottom: 20px;
-}
-
-#CopyBtn {
-  position: absolute;
-  bottom: -50px;
-  right: -30px;
-  transform: translateY(-50%);
-}
-
-#CopyBtn:hover {
-  bottom: -70px;
-}
-
-#site2Btn {
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
-}
-
-#site2Btn:hover {
-  top: 60%;
-}
-
-.header h1 {
-  margin: 0;
-  text-align: center;
-  font-size: 57px;
-  color: white;
-  letter-spacing: 1.1px;
-}
-
-sub {
-  font-size: 0.7em;
-  vertical-align: sub;
-}
-
-.Faktor {
-  text-align: right;
-  font-size: 0.99rem;
-  padding-left: 10px;
-  color: #a89e9e;
-}
-
+/* Gleichheitszeichen mit Tooltip */
 .gleichheitszeichen {
   font-size: 1.54rem;
   padding-left: 20px;
@@ -233,7 +152,6 @@ sub {
   cursor: pointer;
   border-bottom: none;
 }
-
 .gleichheitszeichen .tooltip-box {
   font-size: 0.99rem;
   visibility: hidden;
@@ -253,11 +171,6 @@ sub {
   white-space: nowrap;
   z-index: 10;
 }
-
-.gray-input {
-  background: rgba(200, 200, 200, 0.4);
-}
-
 .gleichheitszeichen .tooltip-box::after {
   content: "";
   position: absolute;
@@ -268,207 +181,312 @@ sub {
   border-style: solid;
   border-color: #222 transparent transparent transparent;
 }
-
 .gleichheitszeichen:hover .tooltip-box,
 .gleichheitszeichen:focus-within .tooltip-box {
   visibility: visible;
   opacity: 1;
   transform: translateX(-50%) translateY(-6px);
 }
-@media (max-width: 650px) {
-  .umrechner.last-input-centered {
-    grid-template-columns: 1fr;
-  }
 
-  .umrechner.last-input-centered .eingabefeld {
-    grid-column: auto;
-    justify-self: stretch;
-    max-width: unset;
-    width: 92%;
-  }
-
-  body {
-    padding-bottom: 90px;
-  }
-
-  input {
-    font-size: 16px;
-    min-height: 44px;
-  }
-
-  form {
-    padding: 20px 14px;
-    border-radius: 18px;
-    margin: 12px;
-  }
-
-  .header {
-    padding: 8px 0;
-    margin-bottom: 18px;
-    min-height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .header h1 {
-    font-size: 24px;
-    letter-spacing: 0.5px;
-    margin: 0;
-  }
-
-  #resetBtn,
-  #site2Btn {
-    width: 38px;
-    height: 38px;
-  }
-
-  #resetBtn {
-    right: 10px;
-  }
-
-  #site2Btn {
-    left: 10px;
-  }
-
-  #resetBtn svg,
-  #site2Btn svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .umschalter {
-    position: absolute;
-    top: 50%;
-    right: 52%;
-    transform: translateY(-50%);
-
-    width: 2.8em;
-    height: 1.5em;
-  }
-
-  .umschalter-knopf {
-    width: 1.1em;
-    height: 1.1em;
-    top: 0.18em;
-    left: 0.18em;
-  }
-
-  .umschalter input:checked + .umschalter-knopf {
-    transform: translateX(1.2em);
-  }
-
-  .umrechner {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 34px;
-  }
-
-  .umrechner label {
-    text-align: center;
-  }
-
-  .gleichheitszeichen {
-    display: none;
-  }
-
-  .eingabefeld {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    box-sizing: border-box;
-
-    padding: 14px 16px;
-    border-radius: 16px;
-  }
-
-  .eingabefeld input {
-    font-size: 20px;
-    padding: 10px 0;
-    min-height: 48px;
-  }
-
-  .einheit-label {
-    font-size: 0.9rem;
-    margin-bottom: 6px;
-  }
-
-  .title {
-    font-size: 1.6rem;
-    line-height: 1.2;
-  }
-
-  #Next_BTN,
-  #Back_BTN {
-    position: fixed;
-    bottom: 16px;
-    z-index: 1000;
-  }
-
-  #Next_BTN {
-    right: 16px;
-  }
-
-  #Back_BTN {
-    left: 16px;
-  }
-
-  #CopyBtn {
-    width: 52px;
-    height: 52px;
-    right: -8px;
-    bottom: -26px;
-  }
-
-  input[type="checkbox"] {
-    min-height: 22px;
-  }
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  position: relative;
+  background: linear-gradient(90deg, #005fa3, #0095ff);
+  padding: 17px 0;
+  margin-bottom: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
-@media (hover: none) {
-  #Save_BTN:hover {
-    scale: 1;
-    bottom: 15px;
-    background: white;
-  }
-  .eingabefeld:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  #resetBtn:hover {
-    scale: 1;
-    top: 50%;
-    background: white;
-  }
-  #site2Btn:hover {
-    scale: 1;
-    top: 50%;
-    background: white;
-  }
-
-  #Next_BTN:hover {
-    scale: 1;
-    background: white;
-  }
-  #Back_BTN:hover {
-    scale: 1;
-    background: white;
-  }
-
-  #CopyBtn:hover {
-    bottom: -30px;
-    scale: 1;
-    background: white;
-  }
-  #logoutBtn:hover {
-    scale: 1;
-    top: 50%;
-    background: white;
-  }
+.header h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 57px;
+  color: white;
+  letter-spacing: 1.1px;
 }
 
+/* ============================================================
+   BUTTONS – Basis
+   ============================================================ */
+.BTN {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.BTN:hover {
+  background: rgb(209, 207, 207);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
+  scale: 150%;
+}
+.BTN:active {
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   BUTTONS – Positionen (Desktop)
+   ============================================================ */
+#site2Btn {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+}
+#site2Btn:hover {
+  top: 60%;
+}
+
+#resetBtn {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+#resetBtn:hover {
+  top: 62.5%;
+}
+
+#Next_BTN {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  z-index: 999;
+}
+#Next_BTN:hover {
+  bottom: 20px;
+}
+
+#Back_BTN {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  transform: scaleX(-1);
+  z-index: 999;
+}
+#Back_BTN:hover {
+  bottom: 20px;
+}
+
+#Save_BTN {
+  position: fixed;
+  bottom: 15px;
+  right: 90px;
+  z-index: 999;
+}
+#Save_BTN:hover {
+  bottom: 20px;
+}
+
+#CopyBtn {
+  position: absolute;
+  bottom: -50px;
+  right: -30px;
+  transform: translateY(-50%);
+}
+#CopyBtn:hover {
+  bottom: -70px;
+}
+
+/* ============================================================
+   USER-BADGE + LOGOUT  (Badge links, Logout rechts)
+   ============================================================ */
+.header-right {
+  position: absolute;
+  top: 50%;
+  right: 90px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+
+/* Logout-Button erbt Position vom Container */
+.header-right #logoutBtn {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+.header-right #logoutBtn:hover {
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+  background: rgb(209, 207, 207);
+  scale: 1.15;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+  max-width: 220px;
+  white-space: nowrap;
+}
+
+.user-badge svg {
+  width: 18px;
+  height: 18px;
+  fill: #ffffff;
+  flex-shrink: 0;
+}
+
+.user-badge .material-symbols-outlined {
+  font-size: 18px;
+}
+
+#usernameLabel {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   TOGGLE ITEMS (ausblendbar)
+   ============================================================ */
+.toggle-item {
+  display: none;
+}
+
+/* ============================================================
+   DROPDOWN
+   ============================================================ */
+.dropdown-container {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  align-items: center;
+  gap: 13px;
+  position: relative;
+  overflow: visible;
+  z-index: 9999;
+}
+.dropdown-container .title {
+  font-size: 1.34rem;
+}
+.dropdown-container label {
+  opacity: 0.6;
+  font-size: 0.99rem;
+  margin-bottom: 3px;
+}
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  justify-self: center;
+  padding: 7px 11px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  border-radius: 13px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+  z-index: 9999;
+  overflow: visible;
+}
+.custom-dropdown:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 5px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+}
+.dropdown-button:hover {
+  border-bottom-color: #0077cc;
+}
+.dropdown-button span {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 13px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+  z-index: 9999;
+}
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+}
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-option {
+  padding: 11px 12px;
+  border-radius: 9px;
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.dropdown-option:hover {
+  background: rgba(0, 119, 204, 0.1);
+  transform: translateX(3px);
+}
+
+/* ============================================================
+   WARNUNG
+   ============================================================ */
 .Triglyceride-warning {
   margin-top: 20px;
   text-align: left;
@@ -480,462 +498,9 @@ sub {
   border-radius: 14px;
 }
 
-u {
-  font-size: larger;
-  text-decoration: underline;
-}
-
-body.page-loaded {
-  opacity: 1;
-}
-
-body.exit-left {
-  transform: translateX(-40px);
-  opacity: 0;
-}
-
-body.exit-right {
-  transform: translateX(40px);
-  opacity: 0;
-}
-
-.umschalter input {
-  appearance: none;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #bbbbbb;
-  margin: 0;
-  border-radius: 999px;
-}
-
-.umschalter {
-  position: absolute;
-  top: 50%;
-  right: 60%;
-  transform: translateY(-50%);
-  width: 3.2em;
-  height: 1.8em;
-}
-
-.umschalter-knopf {
-  background-color: #bbbbbb;
-  width: 1.4em;
-  height: 1.4em;
-  box-shadow: 0 0 1px #333333;
-  position: absolute;
-  top: 0.2em;
-  left: 0.2em;
-  pointer-events: none;
-  transition: transform 0.5s ease-in-out;
-  border-radius: 50%;
-}
-
-.umschalter input:checked {
-  background-color: hsl(216, 98%, 52%);
-  border-color: hsl(216, 98%, 42%);
-}
-
-.umschalter input:checked + .umschalter-knopf {
-  transform: translateX(1.4em);
-  background-color: white;
-}
-
-.toggle-item {
-  display: grid;
-  display: none;
-}
-
-.dropdown-container {
-  display: grid;
-  grid-template-columns: 145px 1fr;
-  align-items: center;
-  gap: 13px;
-
-  /*test*/
-}
-
-.dropdown-container .title {
-  font-size: 1.34rem;
-}
-.custom-dropdown:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
-}
-
-.custom-dropdown {
-  width: 100%;
-  max-width: 220px;
-  justify-self: center;
-
-  padding: 7px 11px;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(6px);
-  border-radius: 13px;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.25s ease;
-}
-
-.dropdown-button {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 7px 5px;
-  min-height: 38px;
-
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-
-  font-size: 1rem;
-  color: #222;
-  cursor: pointer;
-}
-
-.custom-dropdown {
-  position: relative;
-  z-index: 9999;
-  overflow: visible;
-}
-
-.dropdown-container {
-  position: relative;
-  overflow: visible;
-  z-index: 9999;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  width: 100%;
-
-  z-index: 999999;
-
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-
-  transition: 0.2s;
-}
-
-.dropdown-menu.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.dropdown-container label {
-  opacity: 0.6;
-  font-size: 0.99rem;
-  margin-bottom: 3px;
-}
-
-.custom-dropdown {
-  position: relative;
-  width: 100%;
-}
-
-.dropdown-button {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 10px 5px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-
-  font-size: 1rem;
-  color: #222;
-  cursor: pointer;
-}
-
-.dropdown-button:hover {
-  border-bottom-color: #0077cc;
-}
-
-.dropdown-button span {
-  font-size: 20px;
-  transition: transform 0.2s ease;
-}
-
-.dropdown-menu {
-  position: absolute;
-  z-index: 9999;
-  top: calc(100% + 8px);
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-
-  padding: 6px;
-
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 13px;
-
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    visibility 0.2s ease;
-}
-
-.dropdown-menu.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.arrow {
-  transition: transform 0.2s ease;
-}
-
-.arrow.rotate {
-  transform: rotate(180deg);
-}
-
-.dropdown-option {
-  padding: 11px 12px;
-  border-radius: 9px;
-
-  font-size: 1rem;
-  color: #222;
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-.dropdown-option:hover {
-  background: rgba(0, 119, 204, 0.1);
-  transform: translateX(3px);
-}
-
-/* ---------- Mobile Dropdown ---------- */
-@media (max-width: 650px) {
-  .dropdown-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .dropdown-container .title {
-    text-align: center;
-    font-size: 1.4rem;
-  }
-
-  .custom-dropdown {
-    position: relative;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 12px 16px;
-    box-sizing: border-box;
-  }
-
-  .dropdown-button {
-    width: 100%;
-    min-height: 52px;
-    font-size: 20px;
-    padding: 0;
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 8px);
-
-    max-height: 250px;
-    overflow-y: auto;
-
-    background: rgba(255, 255, 255, 0.98);
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-
-    z-index: 99999;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
-
-    transition:
-      opacity 0.2s,
-      transform 0.2s,
-      visibility 0.2s;
-  }
-
-  .dropdown-menu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
-  .dropdown-option {
-    padding: 16px;
-    font-size: 18px;
-  }
-
-  .dropdown-option:active {
-    background: rgba(0, 119, 204, 0.15);
-  }
-}
-
-/* Tablet */
-@media (max-width: 900px) {
-  form {
-    margin: 20px;
-  }
-
-  .umrechner,
-  .dropdown-container {
-    grid-template-columns: 130px 1fr;
-  }
-
-  .header h1 {
-    font-size: 42px;
-  }
-}
-
-/* Handy */
-@media (max-width: 650px) {
-  .umschalter {
-    transform: translate(-27px, -13px);
-  }
-  body {
-    padding-bottom: 90px;
-  }
-
-  form {
-    margin: 12px;
-    padding: 20px 16px;
-    border-radius: 18px;
-  }
-
-  .header {
-    padding: 10px 0;
-    margin-bottom: 20px;
-    min-height: 60px;
-  }
-
-  .header h1 {
-    font-size: 26px;
-  }
-
-  .umrechner,
-  .dropdown-container,
-  .umrechner.last-input-centered {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .umrechner label,
-  .dropdown-container label {
-    text-align: center;
-  }
-
-  .gleichheitszeichen {
-    display: none;
-  }
-
-  .eingabefeld,
-  .custom-dropdown {
-    width: 100%;
-    max-width: none;
-    margin: auto;
-    padding: 14px 16px;
-    border-radius: 16px;
-  }
-
-  .eingabefeld input,
-  .dropdown-button {
-    font-size: 20px;
-    min-height: 48px;
-  }
-
-  .dropdown-option {
-    font-size: 18px;
-    padding: 14px 12px;
-  }
-
-  #Next_BTN,
-  #Back_BTN {
-    position: fixed;
-    bottom: 16px;
-    z-index: 1000;
-  }
-
-  #Next_BTN {
-    right: 16px;
-  }
-
-  #Back_BTN {
-    left: 16px;
-  }
-
-  #CopyBtn {
-    width: 52px;
-    height: 52px;
-    right: 10px;
-    bottom: 80px;
-  }
-
-  #resetBtn,
-  #site2Btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  #resetBtn {
-    right: 10px;
-  }
-
-  #site2Btn {
-    left: 10px;
-  }
-
-  .umschalter {
-    right: 54%;
-    width: 2.8em;
-    height: 1.5em;
-  }
-
-  .umschalter-knopf {
-    width: 1.1em;
-    height: 1.1em;
-    top: 0.18em;
-    left: 0.18em;
-  }
-  #logoutBtn {
-    right: 58px; /* 38px Button + 10px Abstand */
-  }
-  #logoutBtn svg {
-    width: 20px;
-    height: 20px;
-  }
-  #Save_BTN {
-    right: 84px; /* 16px + 60px Button + 8px Lücke */
-    bottom: 16px;
-  }
-}
-
-/* Moderne Checkbox */
-
+/* ============================================================
+   CHECKBOX (modern)
+   ============================================================ */
 .checkbox-container {
   display: flex;
   align-items: center;
@@ -944,36 +509,28 @@ body.exit-right {
   user-select: none;
   font-size: 1rem;
 }
-
 .checkbox-container input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-
   width: 24px;
   height: 24px;
-
   border: 2px solid #bfc8d4;
   border-radius: 8px;
-
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(6px);
-
   transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
 }
-
 .checkbox-container input[type="checkbox"]:hover {
   border-color: #0077cc;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 119, 204, 0.15);
 }
-
 .checkbox-container input[type="checkbox"]:checked {
   background: linear-gradient(135deg, #0077cc, #00a2ff);
   border-color: #0077cc;
 }
-
 .checkbox-container input[type="checkbox"]:checked::after {
   content: "✓";
   position: absolute;
@@ -984,50 +541,14 @@ body.exit-right {
   top: 50%;
   transform: translate(-50%, -55%);
 }
-
 .checkbox-container span {
   flex: 1;
   display: flex;
 }
 
-#resetBtn {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-}
-
-#resetBtn:hover {
-  top: 62.5%;
-}
-
-/* NEU: Logout direkt links neben Reset */
-#logoutBtn {
-  position: absolute;
-  top: 50%;
-  right: 90px;
-  transform: translateY(-50%);
-}
-
-#logoutBtn:hover {
-  top: 62.5%;
-  background: #ffe5e5; /* dezenter Hinweis (rot) */
-}
-
-#Save_BTN {
-  position: fixed;
-  bottom: 15px;
-  right: 90px; /* 15px Abstand + 60px Next_BTN + 15px Lücke */
-  z-index: 999;
-}
-
-#Save_BTN:hover {
-  bottom: 20px;
-}
-
-/* ================================
-   MATERIAL SYMBOLS
-   ================================ */
+/* ============================================================
+   MATERIAL SYMBOLS (nur wenn verwendet)
+   ============================================================ */
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
   font-weight: normal;
@@ -1063,239 +584,332 @@ body.exit-right {
   color: #000000;
 }
 
-/* ================================
-   FIXE BOTTOM-BUTTONS
-   (Back-Button war absolute → wird fixed)
-   ================================ */
-#Back_BTN {
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  transform: scaleX(-1);
-  z-index: 999;
-}
-
-#Back_BTN:hover {
-  bottom: 20px;
-}
-
-#Save_BTN {
-  position: fixed;
-  bottom: 15px;
-  right: 90px;
-  z-index: 999;
-}
-
-#Save_BTN:hover {
-  bottom: 20px;
-}
-
-/* ================================
-   USER-BADGE (Benutzername + Logout)
-   ================================ */
-/* Container: Badge + Logout zusammen, links vom Reset-Button */
-.header-right {
-  position: absolute;
-  top: 50%;
-  right: 90px; /* 20px Abstand zum Reset + 60px Button + 10px Lücke */
-  transform: translateY(-50%);
-  display: flex; /* ← sorgt dafür, dass Badge LINKS vom Logout steht */
-  align-items: center;
-  gap: 12px; /* Abstand zwischen Badge und Logout */
-  z-index: 2;
-}
-
-/* Die Badge selbst */
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 20px;
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(6px);
-  max-width: 220px;
-}
-
-.user-badge svg {
-  width: 18px;
-  height: 18px;
-  fill: #ffffff;
-  flex-shrink: 0;
-}
-
-#usernameLabel {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Mobile */
-@media (max-width: 650px) {
-  .header-right {
-    right: 78px;
-    gap: 6px;
+/* ============================================================
+   TABLET  (<= 900px)
+   ============================================================ */
+@media (max-width: 900px) {
+  form {
+    margin: 20px;
   }
 
-  .user-badge {
-    padding: 4px 8px;
-    font-size: 0.72rem;
-    max-width: 130px;
+  .umrechner,
+  .dropdown-container {
+    grid-template-columns: 130px 1fr;
   }
 
-  .user-badge svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  #usernameLabel {
-    max-width: 70px;
-  }
-}
-
-.user-badge .material-symbols-outlined {
-  font-size: 18px;
-}
-
-#usernameLabel {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ================================
-   MOBILE
-   ================================ */
-@media (max-width: 650px) {
-  #Back_BTN {
-    bottom: 16px;
-    left: 16px;
-  }
-
-  #Save_BTN {
-    bottom: 16px;
-    right: 84px;
-  }
-
-  .header-right {
-    right: 78px;
-    gap: 6px;
-  }
-
-  .user-badge {
-    padding: 4px 8px;
-    font-size: 0.72rem;
-    max-width: 130px;
-  }
-
-  .user-badge .material-symbols-outlined {
-    font-size: 15px;
-  }
-
-  #usernameLabel {
-    max-width: 70px;
-  }
-}
-
-@media (hover: none) {
-  #Save_BTN:hover,
-  #Back_BTN:hover {
-    scale: 1;
-    bottom: 15px;
-    background: white;
+  .header h1 {
+    font-size: 42px;
   }
 }
 
 /* ============================================================
-   USER-BADGE + LOGOUT  →  nebeneinander, links vom Reset-Button
+   HANDY  (<= 650px)
    ============================================================ */
+@media (max-width: 650px) {
+  /* ---------- Grundlayout ---------- */
+  body {
+    padding-bottom: 90px;
+  }
 
-.header-right {
+  input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  form {
+    padding: 20px 14px;
+    border-radius: 18px;
+    margin: 12px;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    padding: 10px 0;
+    margin-bottom: 18px;
+    min-height: 60px;
+  }
+  .header h1 {
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Header-Buttons kleiner */
+  #resetBtn,
+  #site2Btn {
+    width: 38px;
+    height: 38px;
+  }
+  #resetBtn {
+    right: 10px;
+  }
+  #site2Btn {
+    left: 10px;
+  }
+  #resetBtn svg,
+  #site2Btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---------- Logout nur noch als Icon links vom Reset ---------- */
+  .header-right {
+    right: 54px; /* 10 (reset) + 38 (reset) + 6 (gap) */
+    gap: 0;
+    z-index: 3;
+  }
+  .header-right #logoutBtn {
+    width: 38px;
+    height: 38px;
+  }
+  .header-right #logoutBtn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Benutzername-Badge auf dem Handy AUSBLENDEN */
+  .user-badge {
+    display: none !important;
+  }
+
+  /* ---------- Umrechner / Eingaben ---------- */
+  .umrechner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 34px;
+  }
+  .umrechner label {
+    text-align: center;
+  }
+
+  .umrechner.last-input-centered {
+    grid-template-columns: 1fr;
+  }
+  .umrechner.last-input-centered .eingabefeld {
+    grid-column: auto;
+    justify-self: stretch;
+    max-width: unset;
+    width: 92%;
+  }
+
+  .gleichheitszeichen {
+    display: none;
+  }
+
+  .eingabefeld {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+  .eingabefeld input {
+    font-size: 20px;
+    padding: 10px 0;
+    min-height: 48px;
+  }
+
+  .einheit-label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  /* ---------- Bottom-Buttons ---------- */
+  #Next_BTN,
+  #Back_BTN {
+    position: fixed;
+    bottom: 16px;
+    z-index: 1000;
+  }
+  #Next_BTN {
+    right: 16px;
+  }
+  #Back_BTN {
+    left: 16px;
+  }
+
+  #Save_BTN {
+    position: fixed;
+    bottom: 16px;
+    right: 84px; /* 16 (Next) + 60 (Next) + 8 (gap) */
+    z-index: 999;
+  }
+
+  #CopyBtn {
+    width: 52px;
+    height: 52px;
+    right: 10px;
+    bottom: 80px;
+  }
+
+  /* ---------- Dropdowns auf Handy ---------- */
+  .dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .dropdown-container .title {
+    text-align: center;
+    font-size: 1.4rem;
+  }
+  .custom-dropdown {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 12px 16px;
+    box-sizing: border-box;
+  }
+  .dropdown-button {
+    width: 100%;
+    min-height: 52px;
+    font-size: 20px;
+    padding: 0;
+  }
+  .dropdown-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    max-height: 250px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    z-index: 99999;
+  }
+  .dropdown-option {
+    padding: 16px;
+    font-size: 18px;
+  }
+  .dropdown-option:active {
+    background: rgba(0, 119, 204, 0.15);
+  }
+
+  /* ---------- Checkboxen ---------- */
+  input[type="checkbox"] {
+    min-height: 22px;
+  }
+}
+
+/* ============================================================
+   TOUCH-GERÄTE (kein Hover)
+   ============================================================ */
+@media (hover: none) {
+  .eingabefeld:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  #resetBtn:hover,
+  #site2Btn:hover,
+  #Next_BTN:hover,
+  #Back_BTN:hover,
+  #Save_BTN:hover,
+  #CopyBtn:hover,
+  #logoutBtn:hover,
+  .header-right #logoutBtn:hover {
+    scale: 1;
+    background: white;
+    transform: none;
+  }
+
+  #resetBtn:hover {
+    top: 50%;
+  }
+  #site2Btn:hover {
+    top: 50%;
+  }
+  #Next_BTN:hover {
+    bottom: 15px;
+  }
+  #Back_BTN:hover {
+    bottom: 15px;
+  }
+  #Save_BTN:hover {
+    bottom: 15px;
+  }
+  #CopyBtn:hover {
+    bottom: -50px;
+  }
+}
+
+/* ============================================================
+   UMSCHALTER (Toggle)
+   ============================================================ */
+.umschalter {
   position: absolute;
   top: 50%;
-  right: 90px; /* links vom Reset (right: 20px + 60px Breite + 10px) */
+  right: 60%;
   transform: translateY(-50%);
-  display: flex;
-  flex-direction: row; /* ← Badge links, Logout rechts */
-  align-items: center;
-  gap: 12px;
-  z-index: 2;
+  width: 3.2em;
+  height: 1.8em;
+  z-index: 5;
 }
 
-/* Falls irgendwo anders noch absolute-Properties lauern → hart überschreiben */
-.header-right #logoutBtn {
-  position: static !important;
-  top: auto !important;
-  right: auto !important;
-  left: auto !important;
-  bottom: auto !important;
-  transform: none !important;
+.umschalter input {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #bbbbbb;
+  margin: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
-.header-right #logoutBtn:hover {
-  top: auto !important;
-  right: auto !important;
-  transform: none !important;
-  background: rgb(209, 207, 207);
-  scale: 1.15;
+.umschalter-knopf {
+  background-color: #bbbbbb;
+  width: 1.4em;
+  height: 1.4em;
+  box-shadow: 0 0 1px #333333;
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  pointer-events: none;
+  transition: transform 0.5s ease-in-out;
+  border-radius: 50%;
 }
 
-/* Badge selbst */
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 20px;
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(6px);
-  max-width: 220px;
-  white-space: nowrap;
+.umschalter input:checked {
+  background-color: hsl(216, 98%, 52%);
+  border-color: hsl(216, 98%, 42%);
 }
 
-.user-badge svg {
-  width: 18px;
-  height: 18px;
-  fill: #ffffff;
-  flex-shrink: 0;
+.umschalter input:checked + .umschalter-knopf {
+  transform: translateX(1.4em);
+  background-color: white;
 }
 
-#usernameLabel {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Mobile */
+/* ---------- Mobile ---------- */
 @media (max-width: 650px) {
-  .header-right {
-    right: 78px;
-    gap: 6px;
+  .umschalter {
+    top: 50%;
+    right: auto;
+    left: 58px;
+    transform: translateY(-50%);
+    width: 2.8em;
+    height: 1.5em;
   }
 
-  .user-badge {
-    padding: 4px 8px;
-    font-size: 0.72rem;
-    max-width: 130px;
+  .umschalter-knopf {
+    width: 1.1em;
+    height: 1.1em;
+    top: 0.18em;
+    left: 0.18em;
   }
 
-  .user-badge svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  #usernameLabel {
-    max-width: 70px;
+  .umschalter input:checked + .umschalter-knopf {
+    transform: translateX(1.2em);
   }
 }
