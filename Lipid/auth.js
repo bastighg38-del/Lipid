@@ -1,5 +1,5 @@
 // ================== API ==================
-const API_URL = "https://lipidsapi.onrender.com";
+const API_URL = "https://lipidsapi.de.deplexo.com";
 
 // ================== Base Path ==================
 function getBasePath() {
