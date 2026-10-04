@@ -25,7 +25,12 @@
     <link rel="manifest" href="../site.webmanifest" />
 
     <link rel="stylesheet" href="../styles.css" />
-    <script src="../auth.js" defer></script>
+
+    <!-- Material Symbols: delete icon -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete"
+    />
 
     <style>
       .data-box {
@@ -76,18 +81,46 @@
         background: #f9fafb;
       }
 
+      /* ============================================================
+         DELETE-BUTTON (Icon)
+         ============================================================ */
       .delete-button {
         background: #dc2626;
         border: 0;
         color: #fff;
-        padding: 7px 10px;
-        font-size: 13px;
-        border-radius: 8px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition:
+          background 0.2s ease,
+          scale 0.12s ease;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
       }
 
       .delete-button:hover {
         background: #b91c1c;
+      }
+
+      .delete-button:active {
+        scale: 0.94;
+      }
+
+      .delete-button .material-symbols-outlined {
+        font-size: 20px;
+        color: #fff;
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 500,
+          "GRAD" 0,
+          "opsz" 24;
+        pointer-events: none;
+        user-select: none;
       }
 
       .empty {
@@ -216,7 +249,7 @@
          ================================ -->
     <div class="header">
       <a
-        href="Formular1.html"
+        href="../site2.html"
         id="site2Btn"
         class="BTN"
         title="Zurück zu Formular 1"
@@ -320,7 +353,6 @@
             d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
           />
         </svg>
-        Aktualisieren
       </button>
     </div>
 
@@ -385,7 +417,9 @@
         <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
       </svg>
     </a>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../auth.js" defer></script>
+    <script src="../script.js" defer></script>
     <script>
       // ============================================================
       //  FIELDS
@@ -446,6 +480,17 @@
       const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
 
       // ============================================================
+      //  HILFE: Gast-Erkennung ohne harten Crash
+      // ============================================================
+      function guestMode() {
+        return typeof isGuest === "function" && isGuest();
+      }
+
+      function hasLogin() {
+        return typeof isLoggedIn === "function" && isLoggedIn();
+      }
+
+      // ============================================================
       //  SLIDE-ANIMATION ZWISCHEN SEITEN
       // ============================================================
       function initPageTransitions() {
@@ -481,10 +526,10 @@
       //  START
       // ============================================================
       document.addEventListener("DOMContentLoaded", () => {
-        // Fade-In sofort
         document.body.classList.add("page-loaded");
 
-        if (!requireLogin()) return;
+        // Kein requireLogin() mehr → Gäste erlaubt.
+        // (Gäste sehen leere Tabelle + Hinweis, kein Redirect.)
 
         loadData();
 
@@ -562,13 +607,20 @@
         const body = document.getElementById("dataBody");
         body.innerHTML = `<tr><td colspan="34" class="empty">Daten werden geladen...</td></tr>`;
 
+        // Gast → gar nicht erst laden, direkt Hinweis
+        if (guestMode()) {
+          body.innerHTML = `<tr><td colspan="34" class="empty">Als Gast können Sie keine gespeicherten Daten einsehen. Bitte loggen Sie sich ein.</td></tr>`;
+          return;
+        }
+
         try {
           const res = await fetch(`${API_URL}/read`, {
             headers: authHeaders(),
           });
 
           if (res.status === 401) {
-            logout();
+            // Token abgelaufen / nicht eingeloggt → kein harter Logout
+            body.innerHTML = `<tr><td colspan="34" class="empty">Sitzung abgelaufen oder nicht angemeldet. Bitte neu einloggen.</td></tr>`;
             return;
           }
           if (!res.ok) throw new Error("Fehler beim Laden");
@@ -597,9 +649,13 @@
 
             const actionTd = document.createElement("td");
             const del = document.createElement("button");
-            del.textContent = "Löschen";
+            del.type = "button";
             del.className = "delete-button";
-            del.onclick = () => deleteRow(index);
+            del.setAttribute("aria-label", "Zeile löschen");
+            del.setAttribute("title", "Zeile löschen");
+            del.innerHTML =
+              '<span class="material-symbols-outlined">delete</span>';
+            del.addEventListener("click", () => deleteRow(index));
             actionTd.appendChild(del);
             tr.appendChild(actionTd);
 
@@ -608,6 +664,11 @@
         } catch (err) {
           console.error(err);
           body.innerHTML = `<tr><td colspan="34" class="empty error">Daten konnten nicht geladen werden.</td></tr>`;
+          showPopup(
+            "Fehler beim Laden",
+            "Die gespeicherten Daten konnten nicht geladen werden.",
+            "error",
+          );
         }
       }
 
@@ -615,7 +676,17 @@
       //  LÖSCHEN
       // ============================================================
       async function deleteRow(id) {
-        if (!confirm(`Zeile ${id} wirklich löschen?`)) return;
+        // Sicherer Aufruf: nimm confirmPopup, wenn vorhanden
+        let ok;
+        if (typeof confirmPopup === "function") {
+          ok = await confirmPopup(
+            "Zeile löschen?",
+            `Zeile ${id} wirklich unwiderruflich löschen?`,
+          );
+        } else {
+          ok = confirm(`Zeile ${id} wirklich unwiderruflich löschen?`);
+        }
+        if (!ok) return;
 
         try {
           const res = await fetch(`${API_URL}/delete-row/${id}`, {
@@ -624,7 +695,11 @@
           });
 
           if (res.status === 401) {
-            logout();
+            showPopup(
+              "Nicht angemeldet",
+              "Ihre Sitzung ist abgelaufen. Bitte neu einloggen.",
+              "warning",
+            );
             return;
           }
 
@@ -632,8 +707,9 @@
           if (!res.ok) throw new Error(result.detail || "Fehler beim Löschen");
 
           loadData();
+          showPopup("Gelöscht", `Zeile ${id} wurde entfernt.`, "success");
         } catch (err) {
-          alert("Fehler: " + err.message);
+          showPopup("Fehler beim Löschen", err.message, "error");
         }
       }
 
@@ -649,6 +725,11 @@
         if (!pid) {
           message.innerHTML =
             '<span class="error">Bitte eine PatientenID eingeben.</span>';
+          showPopup(
+            "PatientenID fehlt",
+            "Bitte eine PatientenID eingeben.",
+            "warning",
+          );
           return;
         }
 
@@ -656,6 +737,11 @@
         if (!Number.isFinite(numericId)) {
           message.innerHTML =
             '<span class="error">Ungültige PatientenID.</span>';
+          showPopup(
+            "Ungültige PatientenID",
+            "Bitte eine gültige Zahl eingeben.",
+            "warning",
+          );
           return;
         }
         pid = String(numericId);
@@ -670,12 +756,22 @@
           );
 
           if (res.status === 401) {
-            logout();
+            message.innerHTML = '<span class="error">Nicht angemeldet.</span>';
+            showPopup(
+              "Nicht angemeldet",
+              "Bitte einloggen, um das Diagramm zu laden.",
+              "warning",
+            );
             return;
           }
           if (res.status === 404) {
             message.innerHTML =
               '<span class="error">Keine Daten für diese PatientenID gefunden.</span>';
+            showPopup(
+              "Keine Daten",
+              "Für diese PatientenID wurden keine Daten gefunden.",
+              "info",
+            );
             return;
           }
           if (!res.ok) throw new Error("Fehler beim Laden des Diagramms.");
@@ -691,6 +787,7 @@
         } catch (err) {
           console.error(err);
           message.innerHTML = `<span class="error">${err.message}</span>`;
+          showPopup("Fehler beim Diagramm", err.message, "error");
         }
       }
 
@@ -713,6 +810,11 @@
             await container.webkitRequestFullscreen();
         } catch (e) {
           console.error("Fullscreen Fehler:", e);
+          showPopup(
+            "Vollbild nicht möglich",
+            "Der Browser konnte den Vollbildmodus nicht starten.",
+            "error",
+          );
         }
       }
     </script>

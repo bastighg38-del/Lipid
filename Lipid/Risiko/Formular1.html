@@ -26,7 +26,6 @@
     <link rel="manifest" href="../site.webmanifest" />
 
     <link rel="stylesheet" href="../styles.css" />
-    <script src="../auth.js" defer></script>
 
     <style>
       section + section {
@@ -455,7 +454,13 @@
       </svg>
     </button>
 
-    <a href="Formular2.html" id="Next_BTN" class="BTN" title="Weiter">
+    <button
+      type="button"
+      id="Next_BTN"
+      class="BTN"
+      data-href="Formular2.html"
+      title="Weiter"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"
@@ -465,9 +470,15 @@
       >
         <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
       </svg>
-    </a>
+    </button>
 
-    <a href="../index.html" id="Back_BTN" class="BTN" title="Zurück">
+    <button
+      type="button"
+      id="Back_BTN"
+      class="BTN"
+      data-href="../index.html"
+      title="Zurück"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"
@@ -477,8 +488,10 @@
       >
         <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
       </svg>
-    </a>
-
+    </button>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../auth.js" defer></script>
+    <script src="../script.js" defer></script>
     <script>
       // ============================================================
       //  KONSTANTEN
@@ -697,7 +710,11 @@
           };
 
           if (!payload.PatientenID) {
-            alert("Bitte eine Patienten-ID eingeben.");
+            showPopup(
+              "Patienten-ID fehlt",
+              "Bitte eine Patienten-ID eingeben.",
+              "warning",
+            );
             return;
           }
 
@@ -720,25 +737,13 @@
               throw new Error(result.detail || "Fehler beim Speichern");
             }
 
-            const div = document.createElement("div");
-            div.textContent = "Gespeichert (ID " + result.id + ")";
-            Object.assign(div.style, {
-              position: "fixed",
-              top: "20px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              background: "#16a34a",
-              color: "white",
-              padding: "12px 22px",
-              borderRadius: "10px",
-              zIndex: 9999,
-              boxShadow: "0 10px 30px rgba(0,0,0,.3)",
-              fontFamily: "sans-serif",
-            });
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 2500);
+            showPopup(
+              "Gespeichert",
+              `Der Datensatz wurde mit ID ${result.id} gespeichert.`,
+              "success",
+            );
           } catch (err) {
-            alert("Fehler: " + err.message);
+            showPopup("Fehler beim Speichern", err.message, "error");
           } finally {
             saveBtn.disabled = false;
           }

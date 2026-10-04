@@ -11,7 +11,26 @@
     <link rel="manifest" href="site.webmanifest" />
 
     <title>FastTrack CKD</title>
-
+    <style>
+      @media (max-width: 650px) {
+        html body #CopyBtn,
+        html body #CopyBtn:hover,
+        html body #CopyBtn:active,
+        html body #CopyBtn:focus {
+          position: fixed !important;
+          top: auto !important;
+          left: auto !important;
+          right: -8px !important;
+          bottom: 5px !important;
+          transform: none !important;
+          width: 52px !important;
+          height: 52px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          z-index: 9999 !important;
+        }
+      }
+    </style>
     <!-- CSS einbinden -->
     <link rel="stylesheet" href="../Lipid/styles.css" />
     <link rel="stylesheet" href="styles.css" />

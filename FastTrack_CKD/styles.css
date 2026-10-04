@@ -172,22 +172,8 @@ form {
 }
 
 #CopyBtn {
+  bottom: -50px;
   position: absolute;
-  top: -18px;
-  right: -18px;
-  left: auto;
-  bottom: auto;
   transform: none;
-  width: 46px;
-  height: 46px;
   z-index: 10;
-}
-
-#CopyBtn:hover {
-  top: -22px;
-  right: -22px;
-  left: auto;
-  bottom: auto;
-  background: rgb(209, 207, 207);
-  scale: 1.08;
 }

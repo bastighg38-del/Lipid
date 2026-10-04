@@ -13,8 +13,6 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
     />
-    <script src="auth.js" defer></script>
-    <script src="script.js" defer></script>
   </head>
   <body>
     <div class="header">
@@ -483,7 +481,14 @@
       </div>
     </form>
 
-    <a href="Risiko/Formular1.html" id="Next_BTN" class="BTN">
+    <button
+      type="button"
+      id="Next_BTN"
+      class="BTN"
+      data-href="Risiko/Formular1.html"
+      data-guest-blocked="true"
+      title="Weiter"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"
@@ -493,8 +498,11 @@
       >
         <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
       </svg>
-    </a>
+    </button>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="auth.js" defer></script>
+    <script src="script.js" defer></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (!requireSession()) return;
@@ -507,18 +515,6 @@
 
         // Logout
         document.getElementById("logoutBtn")?.addEventListener("click", logout);
-
-        // Next_BTN für Gäste sperren
-        const nextBtn = document.getElementById("Next_BTN");
-        if (nextBtn && isGuest()) {
-          nextBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            alert(
-              "Diese Funktion ist nur für eingeloggte Benutzer verfügbar. Bitte einloggen.",
-            );
-            window.location.href = "login.html";
-          });
-        }
       });
     </script>
   </body>

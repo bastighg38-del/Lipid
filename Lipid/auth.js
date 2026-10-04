@@ -1,5 +1,45 @@
+// ================== Popup (CKD-Stil) ==================
+function showPopup(title, text, icon = "info") {
+  if (typeof Swal === "undefined") {
+    alert(`${title}\n\n${text}`);
+    return Promise.resolve();
+  }
+  return Swal.fire({
+    title,
+    text,
+    icon,
+    confirmButtonText: "OK",
+    confirmButtonColor: "#2563eb",
+    background: "#fff",
+    color: "#1f2937",
+    allowOutsideClick: true,
+    allowEscapeKey: true,
+  });
+}
+
+async function confirmPopup(title, text, confirmText = "Ja, löschen") {
+  if (typeof Swal === "undefined") {
+    return confirm(`${title}\n\n${text}`);
+  }
+  const result = await Swal.fire({
+    title,
+    text,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: confirmText,
+    cancelButtonText: "Abbrechen",
+    confirmButtonColor: "#dc2626",
+    cancelButtonColor: "#6b7280",
+    background: "#fff",
+    color: "#1f2937",
+    allowOutsideClick: true,
+    allowEscapeKey: true,
+  });
+  return result.isConfirmed;
+}
+
 // ================== API ==================
-const API_URL = "https://lipidsapi.onrender.com";
+const API_URL = "https://lipidsapi.de.deplexo.com";
 
 // ================== Base Path ==================
 function getBasePath() {
@@ -67,21 +107,29 @@ function logout() {
   window.location.href = getBasePath() + "login.html";
 }
 
-// ================== Guards ==================
-// Aufruf auf jeder geschützten Seite
 function requireLogin() {
   if (!isLoggedIn()) {
-    alert("Bitte einloggen, um auf diese Seite zuzugreifen.");
-    window.location.href = getBasePath() + "login.html";
+    showPopup(
+      "Anmeldung erforderlich",
+      "Bitte loggen Sie sich ein, um auf diese Seite zuzugreifen.",
+      "warning",
+    ).then(() => {
+      window.location.href = getBasePath() + "login.html";
+    });
     return false;
   }
   return true;
 }
 
-// index.html: Login oder Gast erlaubt
 function requireSession() {
   if (!isLoggedIn() && !isGuest()) {
-    window.location.href = getBasePath() + "login.html";
+    showPopup(
+      "Zugriff verweigert",
+      "Bitte melden Sie sich an, um fortzufahren.",
+      "error",
+    ).then(() => {
+      window.location.href = getBasePath() + "login.html";
+    });
     return false;
   }
   return true;

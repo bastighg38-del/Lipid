@@ -1,3 +1,58 @@
+// Klick-/Tipp-Feedback für alle .BTN-Buttons (Maus, Touch, Stift)
+(() => {
+  const MIN_MS = 220; // so lange bleibt der Effekt mindestens sichtbar
+  const timers = new WeakMap();
+  const startTimes = new WeakMap();
+  let activeBtn = null;
+
+  function press(btn) {
+    clearTimeout(timers.get(btn));
+    startTimes.set(btn, performance.now());
+    btn.classList.add("is-pressed");
+  }
+
+  function release(btn) {
+    const elapsed = performance.now() - (startTimes.get(btn) || 0);
+    const wait = Math.max(0, MIN_MS - elapsed);
+    timers.set(
+      btn,
+      setTimeout(() => btn.classList.remove("is-pressed"), wait),
+    );
+  }
+
+  document.addEventListener(
+    "pointerdown",
+    (e) => {
+      const btn = e.target.closest?.(".BTN");
+      if (!btn) return;
+      activeBtn = btn;
+      press(btn);
+    },
+    { passive: true },
+  );
+
+  ["pointerup", "pointercancel"].forEach((type) =>
+    document.addEventListener(
+      type,
+      () => {
+        if (!activeBtn) return;
+        release(activeBtn);
+        activeBtn = null;
+      },
+      { passive: true },
+    ),
+  );
+
+  // Tastatur (Enter / Leertaste)
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const btn = e.target.closest?.(".BTN");
+    if (!btn) return;
+    press(btn);
+    release(btn);
+  });
+})();
+
 // ================== Faktoren ==================
 
 const factor1 = 0.026;
@@ -99,7 +154,18 @@ const resetBtn = get("resetBtn");
 resetBtn?.addEventListener("click", () => {
   document.querySelectorAll("input").forEach((i) => (i.value = ""));
   document.querySelectorAll("select").forEach((s) => (s.value = ""));
-  localStorage.clear();
+
+  // Nur Formulardaten löschen, Login bleibt unangetastet
+  Object.keys(localStorage).forEach((key) => {
+    if (
+      /^\d+Input$/.test(key) ||
+      key.startsWith(PATIENT_PREFIX) ||
+      key === "TOGGEL"
+    ) {
+      localStorage.removeItem(key);
+    }
+  });
+
   updateAllCalculated();
   updateBMI();
 });
@@ -271,20 +337,35 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("page-loaded");
   }, 50);
 
-  document.querySelectorAll("a[href]").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      const href = link.getAttribute("href");
+  document.querySelectorAll("a[href], [data-href]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      const href = el.getAttribute("href") || el.dataset.href;
       if (
         !href ||
         href === "#" ||
         href.startsWith("http") ||
-        link.target === "_blank"
+        el.target === "_blank"
       )
         return;
       if (href === window.location.pathname.split("/").pop()) return;
+
       e.preventDefault();
 
-      if (link.id === "Back_BTN") {
+      // Gast-Sperre (nur wenn explizit markiert)
+      if (
+        el.dataset.guestBlocked === "true" &&
+        typeof isGuest === "function" &&
+        isGuest()
+      ) {
+        showPopup(
+          "Anmeldung erforderlich",
+          "Diese Funktion ist nur für eingeloggte Benutzer verfügbar. Bitte loggen Sie sich ein.",
+          "info",
+        );
+        return;
+      }
+
+      if (el.id === "Back_BTN") {
         document.body.classList.add("exit-right");
         document.body.style.transformOrigin = "right center";
       } else {
@@ -819,35 +900,40 @@ function updateFachQuotient(numeratorInput, denominatorInput, outputInput) {
 
 // ================== ALERT ==================
 function coolalert() {
+  // CKD-Popup bevorzugt (kommt aus auth.js)
+  if (typeof showPopup === "function") {
+    showPopup(
+      "Werte übernommen",
+      "Die Werte wurden übernommen. Bitte kurz prüfen.",
+      "success",
+    );
+    return;
+  }
+
+  // Fallback: gleicher Stil, direkt mit Swal
   if (typeof Swal !== "undefined") {
     Swal.fire({
-      title: "✔ Erfolgreich eingefügt",
+      title: "Werte übernommen",
       text: "Die Werte wurden übernommen. Bitte kurz prüfen.",
       icon: "success",
-      confirmButtonText: "Alles klar",
-      background: "#1e1e1e",
-      color: "#ffffff",
-      confirmButtonColor: "#4CAF50",
+      confirmButtonText: "OK",
+      confirmButtonColor: "#2563eb",
+      background: "#fff",
+      color: "#1f2937",
+      allowOutsideClick: true,
+      allowEscapeKey: true,
     });
-  } else {
-    const div = document.createElement("div");
-    div.textContent = "✔ Werte eingefügt";
-    div.style = `
-            position:fixed;
-            top:20px;
-            left:50%;
-            transform:translateX(-50%);
-            background:#333;
-            color:white;
-            padding:12px 20px;
-            border-radius:10px;
-            z-index:9999;
-            box-shadow:0 10px 30px rgba(0,0,0,0.3);
-            font-family:sans-serif;
-        `;
-
-    document.body.appendChild(div);
-
-    setTimeout(() => div.remove(), 2500);
+    return;
   }
+
+  // Letzter Fallback ohne Bibliothek
+  const div = document.createElement("div");
+  div.textContent = "✔ Werte übernommen";
+  div.style = `
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    background:#333; color:white; padding:12px 20px; border-radius:10px;
+    z-index:9999; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    font-family:sans-serif;`;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2500);
 }

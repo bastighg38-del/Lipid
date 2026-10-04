@@ -647,10 +647,14 @@ function initCopyButton() {
     characterData: true,
   });
 
+  // Original-SVG merken (einmalig)
+  const originalHTML = copyButton.innerHTML;
+
   copyButton.addEventListener("click", async () => {
     const text = resultText.innerText.trim();
 
     if (!text) {
+      // Leerer Zustand bleibt als Warnung — aber nur hier
       showPopup(
         "Keine Daten",
         "Es sind keine Ergebnisse zum Kopieren vorhanden.",
@@ -675,18 +679,27 @@ function initCopyButton() {
         document.body.removeChild(textarea);
       }
 
-      showPopup(
-        "Kopiert!",
-        "Der Befund wurde in die Zwischenablage kopiert.",
-        "success",
-      );
+      // ✅ Häkchen statt Popup
+      copyButton.innerHTML = `
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="black"
+        >
+          <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+      `;
+      copyButton.setAttribute("aria-label", "Text wurde kopiert");
+
+      setTimeout(() => {
+        copyButton.innerHTML = originalHTML;
+        copyButton.setAttribute("aria-label", "Befund kopieren");
+      }, 1200);
     } catch (err) {
+      // ❌ kein Popup, nur Konsole
       console.error("Copy fehlgeschlagen:", err);
-      showPopup(
-        "Kopieren nicht möglich",
-        "Bitte den Text manuell markieren und kopieren.",
-        "error",
-      );
     }
   });
 }
