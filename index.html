@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link
       rel="icon"
       type="image/png"
@@ -19,6 +19,10 @@
     />
     <link rel="manifest" href="FastTrack_CKD/site.webmanifest" />
     <title>Weiterleitung</title>
+    <meta
+      name="description"
+      content="Wählen Sie zwischen Lipid, FastTrack CKD und Dialyse NU."
+    />
 
     <style>
       * {
@@ -28,9 +32,9 @@
       body {
         margin: 0;
         min-height: 100vh;
+        padding: 40px 20px;
 
         font-family: Arial, Helvetica, sans-serif;
-
         background: linear-gradient(135deg, #f8f9fb, #e9edf2);
 
         display: flex;
@@ -41,116 +45,154 @@
       .page {
         width: 100%;
         max-width: 1100px;
-        padding: 40px 25px;
-      }
-
-      /* LOGO */
-
-      .logo-container {
-        text-align: center;
-        margin-bottom: 35px;
-      }
-
-      .logo {
-        width: 512px;
-        height: 512px;
-        object-fit: contain;
-        border-radius: 50%;
+        margin: auto;
       }
 
       h1 {
-        text-align: center;
         margin: 0 0 35px;
-
-        font-size: 30px;
+        text-align: center;
+        font-size: clamp(24px, 4vw, 32px);
         font-weight: 600;
         color: #1c1c1c;
       }
 
-      /* KARTEN */
-
       .cards {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+        align-items: stretch;
       }
 
       .card {
+        min-width: 0;
         background: white;
-
         border-radius: 20px;
         overflow: hidden;
 
         text-decoration: none;
         color: #222;
 
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 
         transition:
           transform 0.25s ease,
           box-shadow 0.25s ease;
+
+        display: flex;
+        flex-direction: column;
       }
 
       .card:hover {
-        transform: translateY(-8px);
-
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
       }
 
-      .card-image {
-        width: 100%;
-        height: 260px;
+      .card:focus-visible {
+        outline: 3px solid #555;
+        outline-offset: 4px;
+      }
 
-        object-fit: cover;
+      .logo-container {
+        height: 240px;
+        padding: 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #fff;
+      }
+
+      .logo {
         display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: contain;
       }
 
       .card-content {
-        padding: 25px;
+        padding: 22px;
         text-align: center;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1;
       }
 
       .card-title {
         margin: 0;
-
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 600;
+        overflow-wrap: anywhere;
       }
 
       .card-button {
         display: inline-block;
-
-        margin-top: 15px;
-        padding: 12px 25px;
+        margin-top: 18px;
+        padding: 12px 26px;
 
         border-radius: 30px;
-
         background: #111;
         color: white;
 
         font-size: 15px;
+        font-weight: 500;
+
+        transition: background 0.2s ease;
       }
 
-      /* MOBILE */
+      .card:hover .card-button {
+        background: #333;
+      }
 
-      @media (max-width: 700px) {
-        .page {
-          padding: 25px 18px;
+      @media (max-width: 800px) {
+        body {
+          align-items: flex-start;
+          padding: 30px 18px;
         }
 
-        .logo {
-          margin-top: 10px;
-          width: 200px;
-          height: 200px;
+        .cards {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 520px) {
+        body {
+          padding: 24px 16px;
         }
 
         h1 {
-          font-size: 24px;
+          margin-bottom: 25px;
         }
 
         .cards {
           grid-template-columns: 1fr;
           gap: 20px;
+        }
+
+        .logo-container {
+          height: 200px;
+        }
+
+        .logo {
+          max-width: 160px;
+          max-height: 160px;
+        }
+
+        .card-content {
+          padding: 20px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+          scroll-behavior: auto !important;
         }
       }
     </style>
@@ -158,42 +200,50 @@
 
   <body>
     <main class="page">
-      <!-- LOGO -->
-
       <h1>Bitte wählen Sie eine Seite</h1>
 
-      <section class="cards">
+      <section class="cards" aria-label="Verfügbare Projekte">
         <!-- LIPID -->
-        <a class="card" href="Lipid/index.html" target="_self">
+        <a class="card" href="Lipid/index.html">
           <div class="logo-container">
             <img
               class="logo"
               src="Lipid/android-chrome-512x512.png"
-              alt="Logo"
+              alt="Lipid Logo"
             />
           </div>
 
           <div class="card-content">
             <h2 class="card-title">Lipid</h2>
-
-            <span class="card-button"> Öffnen </span>
+            <span class="card-button">Öffnen</span>
           </div>
         </a>
 
         <!-- FASTTRACK CKD -->
-        <a class="card" href="FastTrack_CKD/index.html" target="_self">
+        <a class="card" href="FastTrack_CKD/index.html">
           <div class="logo-container">
             <img
               class="logo"
               src="FastTrack_CKD/logo_small_icon_only_inverted.png"
-              alt="Logo"
+              alt="FastTrack CKD Logo"
             />
           </div>
 
           <div class="card-content">
             <h2 class="card-title">FastTrack CKD</h2>
+            <span class="card-button">Öffnen</span>
+          </div>
+        </a>
 
-            <span class="card-button"> Öffnen </span>
+        <!-- DIALYSE NU -->
+        <a class="card" href="https://bastighg38-del.github.io/Dialyse-NU/">
+          <div class="logo-container">
+            <img class="logo" src="Dialyse-NU.png" alt="Dialyse NU Logo" />
+          </div>
+
+          <div class="card-content">
+            <h2 class="card-title">Dialyse NU</h2>
+            <span class="card-button">Öffnen</span>
           </div>
         </a>
       </section>
